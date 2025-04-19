@@ -14,18 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -62,7 +50,6 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
 }
 
 model VerificationToken {
@@ -71,4 +58,47 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Recipe {
+    id          String    @id @default(cuid())
+    name        String
+    image       String?
+    prepSeconds Int
+    waitSeconds Int
+
+    sections    Section[]
+    tags        Tag[]
+    notes       String
+}
+
+model Tag {
+    name        String      @id
+    recipes     Recipe[]
+}
+
+model Section {
+    id              String      @id @default(cuid())
+    name            String
+
+    ingredients     RecipeIngredient[]
+    preparation     String[]
+        
+    recipeId        String
+    recipe          Recipe      @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model RecipeIngredient {
+    id               String     @id @default(cuid())
+    quantity         Int
+    ingredientName   String
+    ingredient       Ingredient @relation(fields: [ingredientName], references: [name])
+
+    sectionId        String
+    section          Section    @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model Ingredient {
+    name                    String                  @id
+    recipeIngredients       RecipeIngredient[]
 }
