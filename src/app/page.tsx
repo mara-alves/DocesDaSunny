@@ -1,3 +1,5 @@
+"use client";
+
 import Sidebar from "./_components/layout/Sidebar";
 
 export default function Home() {
