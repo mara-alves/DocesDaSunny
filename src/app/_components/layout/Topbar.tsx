@@ -5,7 +5,7 @@ export default async function Topbar() {
   const session = await auth();
 
   return (
-    <div className="bg-base text-base-content sticky top-0 flex h-10 w-full flex-row items-center px-8 shadow-md">
+    <div className="bg-base text-base-content sticky top-0 z-50 flex h-10 w-full flex-row items-center px-8 shadow-md">
       <Link
         href={"api/auth/signin"}
         className="ml-auto font-serif italic underline"
