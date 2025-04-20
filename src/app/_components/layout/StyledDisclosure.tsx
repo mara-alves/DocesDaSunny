@@ -17,10 +17,14 @@ export default function StyledDisclosure({
   content: ReactNode;
 }) {
   return (
-    <Disclosure as={motion.div} layout>
+    <Disclosure
+      as={motion.div}
+      layout
+      className={"bg-primary border-base-content border-2"}
+    >
       {({ open }) => (
         <>
-          <DisclosureButton className="border-base-content bg-primary flex w-full flex-row items-center gap-4 border-2 px-4 py-2 font-semibold">
+          <DisclosureButton className="flex w-full flex-row items-center gap-4 px-4 py-2 font-semibold">
             {icon}
             {title}
             <ChevronDown
@@ -36,7 +40,6 @@ export default function StyledDisclosure({
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="overflow-hidden"
                 >
                   {content}
                 </motion.div>

@@ -14,6 +14,7 @@ export const recipeRouter = createTRPCRouter({
         where: {
           name: {
             contains: input.search,
+            mode: "insensitive",
           },
         },
         orderBy: {

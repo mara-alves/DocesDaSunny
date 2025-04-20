@@ -17,11 +17,13 @@ export const metadata: Metadata = {
 const nunito = Nunito({
   subsets: ["latin"],
   display: "swap",
+  style: ["normal", "italic"],
   variable: "--font-sans",
 });
 
 const brygada = Brygada_1918({
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
   variable: "--font-serif",
 });

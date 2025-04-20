@@ -10,3 +10,7 @@
   --color-background: #f4ecec;
   --color-primary: #ffebeb;
 }
+
+:focus-visible {
+  @apply outline-base-content outline-offset-1 focus-within:outline-1;
+}
