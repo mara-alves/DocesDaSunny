@@ -4,13 +4,14 @@ import { api } from "~/trpc/react";
 import Sidebar from "./_components/layout/Sidebar";
 import RecipeCard from "./_components/recipes/RecipeCard";
 import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import RecipeView from "./_components/recipes/RecipeView";
+import type { Recipe } from "@prisma/client";
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const listRecipes = api.recipe.list.useQuery({ search });
-  const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   return (
     <div className="flex h-full w-full flex-col gap-12 md:flex-row">
@@ -19,24 +20,28 @@ export default function Home() {
         setSearch={setSearch}
         resultsCount={listRecipes.data?.length ?? 0}
       />
-      {selectedRecipeId ? (
-        <RecipeView
-          id={selectedRecipeId}
-          goBack={() => setSelectedRecipeId(null)}
-        />
-      ) : (
-        <div className="z-10 flex w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-          <AnimatePresence>
+      <div className="relative">
+        <AnimatePresence>
+          {selectedRecipe && (
+            <RecipeView
+              recipe={selectedRecipe}
+              goBack={() => setSelectedRecipe(null)}
+            />
+          )}
+          <motion.div
+            key="list"
+            className="flex w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+          >
             {listRecipes.data?.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
-                setRecipe={setSelectedRecipeId}
+                setRecipe={setSelectedRecipe}
               />
             ))}
-          </AnimatePresence>
-        </div>
-      )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

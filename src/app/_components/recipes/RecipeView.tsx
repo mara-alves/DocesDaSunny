@@ -1,25 +1,23 @@
-import { motion } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
-import Image from "next/image";
+import type { Recipe } from "@prisma/client";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ImageOff } from "lucide-react";
 import { api } from "~/trpc/react";
+import NoImage from "~/app/_images/NoImage.png";
 
 export default function RecipeView({
-  id,
+  recipe,
   goBack,
 }: {
-  id: string;
+  recipe: Recipe;
   goBack: () => void;
 }) {
-  const { data: recipe } = api.recipe.getById.useQuery({ id });
+  const { data: fullRecipe } = api.recipe.getById.useQuery({ id: recipe.id });
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.6, type: "spring" }}
-      className="bg-base w-full shadow-lg"
+      key="recipe"
+      layoutId={recipe.name + " card"}
+      className="bg-base absolute top-0 left-0 z-10 w-full shadow-lg"
     >
       <div className="p-4">
         <button
@@ -29,28 +27,30 @@ export default function RecipeView({
           <ChevronLeft /> Voltar
         </button>
       </div>
-      <div className="relative h-64">
-        {recipe?.image ? (
-          <Image
-            src={recipe.image}
-            alt={recipe.name + " photo"}
-            layout={"responsive"}
-            width={50}
-            height={50}
-            className="max-h-64 w-full object-cover object-center"
-          />
-        ) : (
-          <div className="bg-background flex h-64 w-full items-center justify-center text-5xl font-semibold">
-            ?
-          </div>
-        )}
-        <div className="to-base absolute top-0 h-full w-full bg-linear-to-b from-0%"></div>
-        <div className="px-6 pb-4">
-          <div className="font-serif text-4xl font-semibold italic">
+      <motion.div
+        layoutId={recipe.name + " frame"}
+        className="relative flex h-64 items-center overflow-hidden"
+      >
+        <motion.img
+          layoutId={recipe.name + " photo"}
+          src={recipe.image ?? NoImage.src}
+          alt={recipe.name + " photo"}
+          className="aspect-square w-full object-cover object-center"
+        />
+
+        <motion.div
+          layout
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ duration: 0.6 }}
+          className="to-base absolute top-0 flex h-full w-full bg-linear-to-b from-0%"
+        >
+          <div className="mt-auto ml-6 font-serif text-4xl font-semibold italic">
             {recipe?.name}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </motion.div>
   );
 }
