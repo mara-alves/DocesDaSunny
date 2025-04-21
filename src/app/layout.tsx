@@ -7,6 +7,7 @@ import { Brygada_1918 } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import { HydrateClient } from "~/trpc/server";
 import Topbar from "./_components/layout/Topbar";
+import SessionWrapper from "./_providers/SessionWrapper";
 
 export const metadata: Metadata = {
   title: "Doces da Sunny",
@@ -36,12 +37,14 @@ export default function RootLayout({
       <body>
         <TRPCReactProvider>
           <HydrateClient>
-            <div className="bg-background text-base-content h-screen w-screen overflow-auto">
-              <Topbar />
-              <div className="mx-auto mt-8 w-full px-6 md:px-12 xl:container">
-                {children}
+            <SessionWrapper>
+              <div className="bg-background text-base-content h-screen w-screen overflow-auto">
+                <Topbar />
+                <div className="mx-auto mt-8 w-full px-6 md:px-12 xl:container">
+                  {children}
+                </div>
               </div>
-            </div>
+            </SessionWrapper>
           </HydrateClient>
         </TRPCReactProvider>
       </body>
