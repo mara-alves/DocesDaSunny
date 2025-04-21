@@ -38,7 +38,7 @@ export default function RootLayout({
           <HydrateClient>
             <div className="bg-background text-base-content h-screen w-screen overflow-auto">
               <Topbar />
-              <div className="mx-auto mt-8 h-full w-full px-6 md:px-12 xl:container">
+              <div className="mx-auto mt-8 w-full px-6 md:px-12 xl:container">
                 {children}
               </div>
             </div>

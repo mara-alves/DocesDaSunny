@@ -3,9 +3,9 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
-import { AnimatePresence, easeOut, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { Fragment, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export default function StyledDisclosure({
   icon,

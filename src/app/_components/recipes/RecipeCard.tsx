@@ -1,9 +1,25 @@
 import type { Recipe } from "@prisma/client";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
-export default function RecipeCard({ recipe }: { recipe: Recipe }) {
+export default function RecipeCard({
+  recipe,
+  setRecipe,
+}: {
+  recipe: Recipe;
+  setRecipe: (id: string) => void;
+}) {
   return (
-    <div className="bg-base flex h-fit flex-col gap-4 p-4 shadow-lg">
+    <motion.div
+      className="bg-base flex h-fit flex-col gap-4 p-4 shadow-lg"
+      key={recipe.id}
+      layout
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.5 }}
+      transition={{ duration: 0.6, type: "spring" }}
+      onClick={() => setRecipe(recipe.id)}
+    >
       {recipe.image ? (
         <Image
           src={recipe.image}
@@ -19,6 +35,6 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
         </div>
       )}
       <div className="line-clamp-2 h-12 font-semibold">{recipe.name}</div>
-    </div>
+    </motion.div>
   );
 }
