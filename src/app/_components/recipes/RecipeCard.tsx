@@ -5,14 +5,19 @@ import NoImage from "~/app/_images/NoImage.png";
 export default function RecipeCard({
   recipe,
   setRecipe,
+  wasOpen,
 }: {
   recipe: Recipe;
   setRecipe: (id: Recipe) => void;
+  wasOpen: boolean;
 }) {
   return (
     <motion.div
       layoutId={recipe.name + " card"}
-      className="bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg transition-shadow hover:shadow-2xl"
+      className={
+        "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg transition-shadow hover:shadow-2xl " +
+        (wasOpen ? "z-50" : "z-0")
+      }
       onClick={() => setRecipe(recipe)}
     >
       <motion.div
@@ -26,7 +31,7 @@ export default function RecipeCard({
           className="aspect-square w-full object-cover object-center"
         />
       </motion.div>
-      <div className="font-semibold">{recipe.name}</div>
+      <div className="line-clamp-2 h-12 font-semibold">{recipe.name}</div>
     </motion.div>
   );
 }

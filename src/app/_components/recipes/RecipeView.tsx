@@ -7,17 +7,19 @@ import NoImage from "~/app/_images/NoImage.png";
 export default function RecipeView({
   recipe,
   goBack,
+  onTransitionEnd,
 }: {
   recipe: Recipe;
   goBack: () => void;
+  onTransitionEnd: () => void;
 }) {
   const { data: fullRecipe } = api.recipe.getById.useQuery({ id: recipe.id });
 
   return (
     <motion.div
-      key="recipe"
       layoutId={recipe.name + " card"}
-      className="bg-base absolute top-0 left-0 z-10 w-full shadow-lg"
+      className="bg-base relative z-50 w-full shadow-lg"
+      onTransitionEnd={onTransitionEnd}
     >
       <div className="p-4">
         <button
@@ -39,14 +41,14 @@ export default function RecipeView({
         />
 
         <motion.div
-          layout
+          layoutId="gradient"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ duration: 0.6 }}
           className="to-base absolute top-0 flex h-full w-full bg-linear-to-b from-0%"
         >
-          <div className="mt-auto ml-6 font-serif text-4xl font-semibold italic">
+          <div className="mx-6 mt-auto font-serif text-4xl font-semibold italic">
             {recipe?.name}
           </div>
         </motion.div>
