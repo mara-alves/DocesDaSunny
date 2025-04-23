@@ -16,7 +16,7 @@ export default function RecipeView({
   return (
     <motion.div
       layoutId={recipe.name + " card"}
-      className="bg-base relative z-50 w-full shadow-lg"
+      className="bg-base absolute top-0 z-10 w-full shadow-lg"
     >
       <div className="p-4">
         <button
@@ -27,28 +27,23 @@ export default function RecipeView({
         </button>
       </div>
       <motion.div
-        layoutId={recipe.name + " frame"}
-        className="relative flex h-64 items-center overflow-hidden"
+        layoutId={recipe.name + " image container"}
+        className="relative flex h-64 w-full items-center overflow-hidden"
       >
         <motion.img
-          layoutId={recipe.name + " photo"}
+          layoutId={recipe.name + " image"}
           src={recipe.image ?? NoImage.src}
           alt={recipe.name + " photo"}
-          className="aspect-square w-full object-cover object-center"
+          className="w-full"
         />
-
-        {/*         <motion.div
-          layoutId="gradient"
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ duration: 0.6 }}
+        <motion.div
+          layoutId={recipe.name + " gradient"}
           className="to-base absolute top-0 flex h-full w-full bg-linear-to-b from-0%"
         >
           <div className="mx-6 mt-auto font-serif text-4xl font-semibold italic">
             {recipe?.name}
           </div>
-        </motion.div> */}
+        </motion.div>
       </motion.div>
     </motion.div>
   );

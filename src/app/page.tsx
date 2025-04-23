@@ -27,39 +27,48 @@ export default function Home() {
         setSearch={setSearch}
         resultsCount={listRecipes.data?.length ?? 0}
       />
-      <AnimatePresence>
-        {open ? (
-          selectedRecipe ? (
+      <div className="relative flex flex-col">
+        <div
+          className={
+            "z-10 flex w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 " +
+            (open ? "pointer-events-none" : "")
+          }
+        >
+          {session?.user && (
+            <div
+              onClick={() => {
+                setSelectedRecipe(null);
+                setOpen(true);
+              }}
+              className={
+                "bg-primary border-base-content flex cursor-pointer flex-col items-center justify-center border-2 p-8 font-semibold transition " +
+                (open ? "opacity-0" : "opacity-100")
+              }
+            >
+              <Plus className="size-16" />
+              Adicionar Receita
+            </div>
+          )}
+          {listRecipes.data?.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              setRecipe={(e) => {
+                setSelectedRecipe(e);
+                setOpen(true);
+              }}
+              selectedRecipeId={selectedRecipe?.id}
+              isListVisible={!open}
+            />
+          ))}
+        </div>
+        {open &&
+          (selectedRecipe ? (
             <RecipeView recipe={selectedRecipe} goBack={() => setOpen(false)} />
           ) : (
             <EditableRecipe goBack={() => setOpen(false)} />
-          )
-        ) : (
-          <motion.div className="z-10 flex h-fit w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {session?.user && (
-              <button
-                onClick={() => setOpen(true)}
-                className="bg-primary border-base-content flex cursor-pointer flex-col items-center justify-center border-2 p-8 font-semibold transition hover:shadow-xl"
-              >
-                <Plus className="size-16" />
-                Adicionar Receita
-              </button>
-            )}
-            {listRecipes.data?.map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                setRecipe={(e) => {
-                  setSelectedRecipe(e);
-                  setOpen(true);
-                }}
-                wasOpen={selectedRecipe?.id === recipe.id}
-                onTransitionEnd={() => setSelectedRecipe(null)}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+      </div>
     </div>
   );
 }

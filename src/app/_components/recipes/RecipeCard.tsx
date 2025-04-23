@@ -5,34 +5,43 @@ import NoImage from "~/app/_images/NoImage.png";
 export default function RecipeCard({
   recipe,
   setRecipe,
-  wasOpen,
-  onTransitionEnd,
+  selectedRecipeId,
+  isListVisible,
 }: {
   recipe: Recipe;
   setRecipe: (id: Recipe) => void;
-  wasOpen: boolean;
-  onTransitionEnd: () => void;
+  selectedRecipeId?: string;
+  isListVisible?: boolean;
 }) {
   return (
     <motion.div
       layoutId={recipe.name + " card"}
+      style={{
+        transition:
+          selectedRecipeId === recipe.id ? "none" : "opacity 0.5s ease",
+        opacity: isListVisible || selectedRecipeId == recipe.id ? 1 : 0,
+      }}
       className={
-        "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg transition-shadow hover:shadow-2xl " +
-        (wasOpen ? "z-50" : "z-0")
+        "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg " +
+        (selectedRecipeId == recipe.id ? " z-10" : " z-0")
       }
       onClick={() => setRecipe(recipe)}
-      onTransitionEnd={onTransitionEnd}
     >
       <motion.div
-        layoutId={recipe.name + " frame"}
+        layoutId={recipe.name + " image container"}
         className="relative flex aspect-square w-full items-center overflow-hidden"
       >
         <motion.img
-          layoutId={recipe.name + " photo"}
+          layoutId={recipe.name + " image"}
           src={recipe.image ?? NoImage.src}
           alt={recipe.name + " photo"}
-          className="aspect-square w-full object-cover object-center"
+          className="w-full"
         />
+        <motion.div
+          layoutId={recipe.name + " gradient"}
+          transition={{ duration: 0.5 }}
+          className="to-base absolute top-full flex h-full w-full bg-linear-to-b from-0%"
+        ></motion.div>
       </motion.div>
       <div className="line-clamp-2 h-12 font-semibold">{recipe.name}</div>
     </motion.div>

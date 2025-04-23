@@ -16,10 +16,7 @@ export default function EditableRecipe({
   goBack: () => void;
 }) {
   return (
-    <motion.div
-      layoutId={recipe.name + " card"}
-      className="bg-base relative z-50 w-full shadow-lg"
-    >
+    <div className="bg-base relative z-50 w-full shadow-lg">
       <div className="p-4">
         <button
           className="flex flex-row items-center gap-2 font-serif italic"
@@ -39,6 +36,6 @@ export default function EditableRecipe({
           className="aspect-square w-full object-cover object-center"
         />
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
