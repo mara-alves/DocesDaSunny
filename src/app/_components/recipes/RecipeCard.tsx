@@ -6,10 +6,12 @@ export default function RecipeCard({
   recipe,
   setRecipe,
   wasOpen,
+  onTransitionEnd,
 }: {
   recipe: Recipe;
   setRecipe: (id: Recipe) => void;
   wasOpen: boolean;
+  onTransitionEnd: () => void;
 }) {
   return (
     <motion.div
@@ -19,6 +21,7 @@ export default function RecipeCard({
         (wasOpen ? "z-50" : "z-0")
       }
       onClick={() => setRecipe(recipe)}
+      onTransitionEnd={onTransitionEnd}
     >
       <motion.div
         layoutId={recipe.name + " frame"}

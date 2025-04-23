@@ -4,15 +4,17 @@ import { ChevronLeft } from "lucide-react";
 import { api } from "~/trpc/react";
 import NoImage from "~/app/_images/NoImage.png";
 
-export default function RecipeView({
-  recipe,
+const EmptyRecipe: Partial<Recipe> = {
+  name: "",
+};
+
+export default function EditableRecipe({
+  recipe = EmptyRecipe,
   goBack,
 }: {
-  recipe: Recipe;
+  recipe?: Partial<Recipe>;
   goBack: () => void;
 }) {
-  const { data: fullRecipe } = api.recipe.getById.useQuery({ id: recipe.id });
-
   return (
     <motion.div
       layoutId={recipe.name + " card"}
@@ -36,19 +38,6 @@ export default function RecipeView({
           alt={recipe.name + " photo"}
           className="aspect-square w-full object-cover object-center"
         />
-
-        {/*         <motion.div
-          layoutId="gradient"
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="to-base absolute top-0 flex h-full w-full bg-linear-to-b from-0%"
-        >
-          <div className="mx-6 mt-auto font-serif text-4xl font-semibold italic">
-            {recipe?.name}
-          </div>
-        </motion.div> */}
       </motion.div>
     </motion.div>
   );
