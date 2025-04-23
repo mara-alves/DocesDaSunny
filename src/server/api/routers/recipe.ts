@@ -28,4 +28,17 @@ export const recipeRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return ctx.db.recipe.findUnique({ where: { id: input.id } });
     }),
+
+  create: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        prepSeconds: z.number(),
+        waitSeconds: z.number(),
+        notes: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.db.recipe.create({ data: { ...input } });
+    }),
 });
