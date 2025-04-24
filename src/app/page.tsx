@@ -4,7 +4,6 @@ import { api } from "~/trpc/react";
 import Sidebar from "./_components/layout/Sidebar";
 import RecipeCard from "./_components/recipes/RecipeCard";
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import RecipeView from "./_components/recipes/RecipeView";
 import type { Recipe } from "@prisma/client";
 import EditableRecipe from "./_components/recipes/EditableRecipe";
@@ -66,7 +65,12 @@ export default function Home() {
           (selectedRecipe ? (
             <RecipeView recipe={selectedRecipe} goBack={() => setOpen(false)} />
           ) : (
-            <EditableRecipe goBack={() => setOpen(false)} />
+            <EditableRecipe
+              goBack={async () => {
+                await listRecipes.refetch();
+                setOpen(false);
+              }}
+            />
           ))}
       </div>
     </div>

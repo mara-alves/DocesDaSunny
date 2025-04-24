@@ -33,8 +33,10 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
+        image: z.string().nullish(),
         prepSeconds: z.number(),
         waitSeconds: z.number(),
+        servings: z.number(),
         notes: z.string(),
       }),
     )

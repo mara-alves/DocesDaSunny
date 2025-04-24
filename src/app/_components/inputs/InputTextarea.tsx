@@ -2,12 +2,10 @@ export default function InputTextarea({
   label,
   value,
   setValue,
-  style,
 }: {
   label: string;
   value: string;
   setValue: (value: string) => void;
-  style?: string;
 }) {
   return (
     <div className="flex flex-col gap-1">
@@ -15,7 +13,7 @@ export default function InputTextarea({
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className={style}
+        className="border-base-content border-2 px-2 py-1"
       />
     </div>
   );
