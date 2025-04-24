@@ -1,13 +1,14 @@
 import type { Recipe, Section } from "@prisma/client";
 import { ChevronLeft, CookingPot, Hourglass, Plus, Users } from "lucide-react";
 import InputText from "../inputs/InputText";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import InputTime from "../inputs/InputTime";
 import InputTextarea from "../inputs/InputTextarea";
 import { api } from "~/trpc/react";
 import InputNumber from "../inputs/InputNumber";
 import InputFile from "../inputs/InputFile";
 import type { PutBlobResult } from "@vercel/blob";
+import EditableSection from "./EditableSection";
 
 type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
   sections: Omit<Section, "id" | "recipeId">[];
@@ -23,7 +24,7 @@ const EmptyRecipe: FrontendRecipe = {
   sections: [
     {
       name: "",
-      preparation: [],
+      preparation: [""],
     },
   ],
 };
@@ -46,6 +47,28 @@ export default function EditableRecipe({
       formattedValue = +hours! * 3600 + +minutes! * 60;
     }
     setForm({ ...form, [key]: formattedValue });
+  };
+
+  const editSection = (
+    sectionIdx: number,
+    key: keyof Omit<Section, "id" | "recipeId">,
+    value: string | string[],
+  ) => {
+    let section = form.sections[sectionIdx]!;
+    section = { ...section, [key]: value };
+    setForm({ ...form });
+  };
+
+  const addSection = () => {
+    setForm({
+      ...form,
+      sections: [...form.sections, { name: "", preparation: [""] }],
+    });
+  };
+
+  const deleteSection = (sectionIdx: number) => {
+    form.sections.splice(sectionIdx, 1);
+    setForm({ ...form });
   };
 
   const secondsToHHmm = (seconds: number) => {
@@ -76,21 +99,22 @@ export default function EditableRecipe({
     <div className="bg-base absolute top-0 z-10 w-full shadow-lg">
       <div className="p-4">
         <button
-          className="flex flex-row items-center gap-2 font-serif italic"
+          className="group flex cursor-pointer flex-row items-center font-serif italic"
           onClick={goBack}
         >
-          <ChevronLeft /> Voltar
+          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />{" "}
+          Voltar
         </button>
       </div>
 
       <InputFile file={image} setFile={setImage} />
 
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex w-full flex-col gap-4 p-4">
         <InputText
-          label="Nome"
+          label="Nome da Receita"
           value={form.name}
           setValue={(e) => editForm("name", e)}
-          style="border-2 border-dashed border-base-content px-2 py-1 font-serif text-4xl font-semibold italic"
+          style="border-2 border-dashed border-base-content px-2 py-1 heading text-4xl"
         />
         <div className="flex w-full flex-wrap gap-4">
           <InputTime
@@ -112,6 +136,26 @@ export default function EditableRecipe({
             setValue={(e) => editForm("servings", e)}
           />
         </div>
+
+        <div className="bg-primary mt-8 h-0.5 w-full" />
+
+        {form.sections.map((section, idx) => (
+          <Fragment key={idx}>
+            <EditableSection
+              section={section}
+              editSection={(key, value) => editSection(idx, key, value)}
+              deleteSection={() => deleteSection(idx)}
+            />
+            <div className="bg-primary h-0.5 w-full" />
+          </Fragment>
+        ))}
+
+        <div className="mb-8 flex flex-row justify-center">
+          <button className="btn" onClick={() => addSection()}>
+            <Plus /> Adicionar Secção
+          </button>
+        </div>
+
         <InputTextarea
           label="Notas"
           value={form.notes}

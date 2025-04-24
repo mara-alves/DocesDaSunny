@@ -9,8 +9,17 @@
   --color-base-content: #936662;
   --color-background: #f4ecec;
   --color-primary: #ffebeb;
+  --color-primary-darker: #cebdbd;
 }
 
 :focus-visible {
   @apply outline-base-content outline-offset-1 focus-within:outline-1;
+}
+
+.btn {
+  @apply bg-primary border-base-content flex cursor-pointer flex-row items-center gap-2 border-r-2 border-b-2 px-2 py-1 font-serif font-semibold italic transition hover:shadow-lg;
+}
+
+.heading {
+  @apply font-serif font-semibold italic;
 }

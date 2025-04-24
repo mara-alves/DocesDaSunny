@@ -68,7 +68,7 @@ export default function InputFile({
           Arrasta uma imagem
           <br></br>
           ou
-          <span className="font-serif font-semibold italic"> clica aqui </span>
+          <span className="heading"> clica aqui </span>
           para selecionar
         </p>
         <input

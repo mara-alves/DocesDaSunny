@@ -20,10 +20,11 @@ export default function RecipeView({
     >
       <div className="p-4">
         <button
-          className="flex flex-row items-center gap-2 font-serif italic"
+          className="group flex cursor-pointer flex-row items-center font-serif italic"
           onClick={goBack}
         >
-          <ChevronLeft /> Voltar
+          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />{" "}
+          Voltar
         </button>
       </div>
       <motion.div
@@ -40,9 +41,7 @@ export default function RecipeView({
           layoutId={recipe.name + " gradient"}
           className="to-base absolute top-0 flex h-full w-full bg-linear-to-b from-0%"
         >
-          <div className="mx-6 mt-auto font-serif text-4xl font-semibold italic">
-            {recipe?.name}
-          </div>
+          <div className="heading mx-6 mt-auto text-4xl">{recipe?.name}</div>
         </motion.div>
       </motion.div>
     </motion.div>
