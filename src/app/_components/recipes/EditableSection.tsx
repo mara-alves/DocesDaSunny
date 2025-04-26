@@ -1,20 +1,44 @@
-import type { Section } from "@prisma/client";
 import InputText from "../inputs/InputText";
 import { Plus, Trash, X } from "lucide-react";
 import InputTextarea from "../inputs/InputTextarea";
+import IngredientSelector from "./IngredientSelector";
+import type { FrontendRecipe } from "./EditableRecipe";
 
 export default function EditableSection({
   section,
   editSection,
   deleteSection,
 }: {
-  section: Omit<Section, "id" | "recipeId">;
+  section: FrontendRecipe["sections"][number];
   editSection: (
-    key: keyof Omit<Section, "id" | "recipeId">,
-    value: string | string[],
+    key: keyof FrontendRecipe["sections"][number],
+    value:
+      | string
+      | string[]
+      | FrontendRecipe["sections"][number]["ingredients"][number][],
   ) => void;
   deleteSection: () => void;
 }) {
+  const addIngredient = () => {
+    const ing = section.ingredients;
+    ing.push({ quantity: "", ingredientName: "" });
+    editSection("ingredients", ing);
+  };
+  const editIngredient = (
+    ingredientIdx: number,
+    key: "quantity" | "ingredientName",
+    value: string,
+  ) => {
+    const ing = section.ingredients;
+    ing[ingredientIdx]![key] = value;
+    editSection("ingredients", ing);
+  };
+  const deleteIngredient = (ingredientIdx: number) => {
+    const ing = section.ingredients;
+    ing.splice(ingredientIdx, 1);
+    editSection("ingredients", ing);
+  };
+
   const addStep = () => {
     const prep = section.preparation;
     prep.push("");
@@ -41,16 +65,37 @@ export default function EditableSection({
           setValue={(e) => editSection("name", e)}
           style="border-2 border-dashed border-primary-darker px-2 py-1 heading text-xl"
         />
-        <Trash
-          className="text-primary-darker hover:text-base-content cursor-pointer transition"
-          onClick={deleteSection}
-        />
+        <Trash className="icon-btn" onClick={deleteSection} />
       </div>
 
       <div className="divide-primary flex grid-cols-[0.5fr_1fr] flex-col gap-4 divide-x-2 md:grid">
         <div className="flex flex-col gap-4">
           <div className="heading text-xl">Ingredientes</div>
+          {section.ingredients.map((item, idx) => (
+            <div className="flex flex-row items-center gap-2">
+              <div className="bg-base-content size-2 shrink-0 rounded-full" />
+              <InputText
+                value={item.quantity}
+                setValue={(e) => editIngredient(idx, "quantity", e)}
+                style="border-base-content border-2 px-2 py-1"
+                width="w-24"
+                helper="qtd"
+              />
+              <IngredientSelector
+                value={item.ingredientName}
+                setValue={(e) => editIngredient(idx, "ingredientName", e)}
+              />
+              <X className="icon-btn" onClick={() => deleteIngredient(idx)} />
+            </div>
+          ))}
+          <button
+            className="icon-btn flex justify-center"
+            onClick={() => addIngredient()}
+          >
+            <Plus />
+          </button>
         </div>
+
         <div className="flex flex-col gap-4">
           <div className="heading text-xl">Preparação</div>
           {section.preparation.map((step, idx) => (
@@ -61,14 +106,11 @@ export default function EditableSection({
                 setValue={(e) => editStep(idx, e)}
                 style="transition focus-visible:outline-none focus-visible:border-base-content border-primary border-b-2 p-0.5 "
               />
-              <X
-                className="text-primary-darker hover:text-base-content cursor-pointer transition"
-                onClick={() => deleteStep(idx)}
-              />
+              <X className="icon-btn" onClick={() => deleteStep(idx)} />
             </div>
           ))}
           <button
-            className="text-primary-darker hover:text-base-content flex cursor-pointer justify-center transition"
+            className="icon-btn flex justify-center"
             onClick={() => addStep()}
           >
             <Plus />

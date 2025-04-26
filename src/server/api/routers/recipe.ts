@@ -23,6 +23,14 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
+  listAllIngredients: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.ingredient.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
+  }),
+
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -37,7 +45,7 @@ export const recipeRouter = createTRPCRouter({
         prepSeconds: z.number(),
         waitSeconds: z.number(),
         servings: z.number(),
-        notes: z.string(),
+        notes: z.string().nullish(),
       }),
     )
     .mutation(async ({ input, ctx }) => {

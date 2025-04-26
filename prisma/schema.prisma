@@ -71,7 +71,7 @@ model Recipe {
 
     sections    Section[]
     tags        Tag[]
-    notes       String
+    notes       String?
 }
 
 model Tag {
@@ -92,7 +92,7 @@ model Section {
 
 model RecipeIngredient {
     id               String     @id @default(cuid())
-    quantity         Int
+    quantity         String
     ingredientName   String
     ingredient       Ingredient @relation(fields: [ingredientName], references: [name])
 

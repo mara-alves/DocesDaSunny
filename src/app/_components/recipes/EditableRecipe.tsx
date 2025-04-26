@@ -1,4 +1,4 @@
-import type { Recipe, Section } from "@prisma/client";
+import type { Recipe, RecipeIngredient, Section } from "@prisma/client";
 import { ChevronLeft, CookingPot, Hourglass, Plus, Users } from "lucide-react";
 import InputText from "../inputs/InputText";
 import { Fragment, useState } from "react";
@@ -10,8 +10,16 @@ import InputFile from "../inputs/InputFile";
 import type { PutBlobResult } from "@vercel/blob";
 import EditableSection from "./EditableSection";
 
-type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
-  sections: Omit<Section, "id" | "recipeId">[];
+export type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
+  sections: (Omit<Section, "id" | "recipeId"> & {
+    ingredients: Omit<RecipeIngredient, "id" | "sectionId">[];
+  })[];
+};
+
+const EmptySection: FrontendRecipe["sections"][number] = {
+  name: "",
+  ingredients: [{ quantity: "", ingredientName: "" }],
+  preparation: [""],
 };
 
 const EmptyRecipe: FrontendRecipe = {
@@ -21,12 +29,7 @@ const EmptyRecipe: FrontendRecipe = {
   waitSeconds: 0,
   servings: 1,
   notes: "",
-  sections: [
-    {
-      name: "",
-      preparation: [""],
-    },
-  ],
+  sections: [structuredClone(EmptySection)],
 };
 
 export default function EditableRecipe({
@@ -49,20 +52,19 @@ export default function EditableRecipe({
     setForm({ ...form, [key]: formattedValue });
   };
 
-  const editSection = (
+  const editSection = <K extends keyof FrontendRecipe["sections"][number]>(
     sectionIdx: number,
-    key: keyof Omit<Section, "id" | "recipeId">,
-    value: string | string[],
+    key: K,
+    value: FrontendRecipe["sections"][number][K],
   ) => {
-    let section = form.sections[sectionIdx]!;
-    section = { ...section, [key]: value };
+    form.sections[sectionIdx]![key] = value;
     setForm({ ...form });
   };
 
   const addSection = () => {
     setForm({
       ...form,
-      sections: [...form.sections, { name: "", preparation: [""] }],
+      sections: [...form.sections, structuredClone(EmptySection)],
     });
   };
 
@@ -158,7 +160,7 @@ export default function EditableRecipe({
 
         <InputTextarea
           label="Notas"
-          value={form.notes}
+          value={form.notes ?? ""}
           setValue={(e) => editForm("notes", e)}
         />
 

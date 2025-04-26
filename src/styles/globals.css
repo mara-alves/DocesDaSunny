@@ -20,6 +20,10 @@
   @apply bg-primary border-base-content flex cursor-pointer flex-row items-center gap-2 border-r-2 border-b-2 px-2 py-1 font-serif font-semibold italic transition hover:shadow-lg;
 }
 
+.icon-btn {
+  @apply text-primary-darker hover:text-base-content shrink-0 cursor-pointer transition;
+}
+
 .heading {
   @apply font-serif font-semibold italic;
 }
