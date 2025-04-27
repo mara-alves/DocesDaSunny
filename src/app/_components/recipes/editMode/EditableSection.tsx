@@ -1,8 +1,8 @@
-import InputText from "../inputs/InputText";
 import { Plus, Trash, X } from "lucide-react";
-import InputTextarea from "../inputs/InputTextarea";
 import IngredientSelector from "./IngredientSelector";
 import type { FrontendRecipe, FrontendSection } from "./EditableRecipe";
+import InputText from "../../inputs/InputText";
+import InputTextarea from "../../inputs/InputTextarea";
 
 export type FrontendSectionIngredient = FrontendSection["ingredients"][number];
 

@@ -1,8 +1,18 @@
 import type { Recipe } from "@prisma/client";
 import { motion } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
+import {
+  ChevronLeft,
+  CookingPot,
+  Hourglass,
+  Pencil,
+  Plus,
+  Users,
+} from "lucide-react";
 import { api } from "~/trpc/react";
 import NoImage from "~/app/_images/NoImage.png";
+import { secondsToPrettyString } from "~/utils/time";
+import { useSession } from "next-auth/react";
+import SectionView from "./SectionView";
 
 export default function RecipeView({
   recipe,
@@ -11,6 +21,7 @@ export default function RecipeView({
   recipe: Recipe;
   goBack: () => void;
 }) {
+  const { data: session } = useSession();
   const { data: fullRecipe } = api.recipe.getById.useQuery({ id: recipe.id });
 
   return (
@@ -18,15 +29,21 @@ export default function RecipeView({
       layoutId={recipe.name + " card"}
       className="bg-base absolute top-0 z-10 w-full shadow-lg"
     >
-      <div className="p-4">
+      <div className="flex flex-row px-6 py-4">
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
           onClick={goBack}
         >
-          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />{" "}
+          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />
           Voltar
         </button>
+        {session?.user && (
+          <button className="icon-btn ml-auto">
+            <Pencil />
+          </button>
+        )}
       </div>
+
       <motion.div
         layoutId={recipe.name + " image container"}
         className="relative flex h-64 w-full items-center overflow-hidden"
@@ -44,6 +61,25 @@ export default function RecipeView({
           <div className="heading mx-6 mt-auto text-4xl">{recipe?.name}</div>
         </motion.div>
       </motion.div>
+
+      <div className="flex flex-col gap-8 px-6 pt-3 pb-6">
+        <div className="flex flex-row items-center gap-2">
+          <CookingPot className="shrink-0" />
+          {secondsToPrettyString(recipe.prepSeconds)}
+          <Plus className="shrink-0" />
+          <Hourglass className="shrink-0" />
+          {secondsToPrettyString(recipe.waitSeconds)}
+          <div className="bg-base-content mx-3 h-6 w-0.5 rounded-full" />
+          <Users className="shrink-0" />
+          {recipe.servings} Porções
+        </div>
+
+        {fullRecipe?.sections.map((section) => (
+          <SectionView key={section.id} section={section} />
+        ))}
+
+        {recipe.notes}
+      </div>
     </motion.div>
   );
 }

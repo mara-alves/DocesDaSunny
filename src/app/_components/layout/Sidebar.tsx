@@ -38,7 +38,9 @@ export default function Sidebar({
           content={<div>Hello world</div>}
         />
       </div>
-      <div className="heading text-lg">{resultsCount} resultados</div>
+      <div className="heading text-lg">
+        {resultsCount} resultado{resultsCount != 1 ? "s" : ""}
+      </div>
     </aside>
   );
 }

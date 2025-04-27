@@ -34,7 +34,25 @@ export const recipeRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
-      return ctx.db.recipe.findUnique({ where: { id: input.id } });
+      return ctx.db.recipe.findUnique({
+        where: { id: input.id },
+        include: {
+          sections: {
+            include: {
+              ingredients: {
+                select: {
+                  quantity: true,
+                  ingredient: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
     }),
 
   create: protectedProcedure

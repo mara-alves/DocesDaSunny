@@ -6,9 +6,9 @@ import RecipeCard from "./_components/recipes/RecipeCard";
 import { useState } from "react";
 import RecipeView from "./_components/recipes/RecipeView";
 import type { Recipe } from "@prisma/client";
-import EditableRecipe from "./_components/recipes/EditableRecipe";
 import { Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
+import EditableRecipe from "./_components/recipes/editMode/EditableRecipe";
 
 export default function Home() {
   const { data: session } = useSession();

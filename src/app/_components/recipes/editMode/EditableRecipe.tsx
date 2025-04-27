@@ -1,14 +1,15 @@
-import type { Recipe, RecipeIngredient, Section } from "@prisma/client";
+import type { Recipe, Section } from "@prisma/client";
 import { ChevronLeft, CookingPot, Hourglass, Plus, Users } from "lucide-react";
-import InputText from "../inputs/InputText";
 import { Fragment, useState } from "react";
-import InputTime from "../inputs/InputTime";
-import InputTextarea from "../inputs/InputTextarea";
 import { api } from "~/trpc/react";
-import InputNumber from "../inputs/InputNumber";
-import InputFile from "../inputs/InputFile";
 import type { PutBlobResult } from "@vercel/blob";
 import EditableSection from "./EditableSection";
+import { secondsToHHmm } from "~/utils/time";
+import InputFile from "../../inputs/InputFile";
+import InputNumber from "../../inputs/InputNumber";
+import InputText from "../../inputs/InputText";
+import InputTextarea from "../../inputs/InputTextarea";
+import InputTime from "../../inputs/InputTime";
 
 export type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
   sections: (Omit<Section, "id" | "recipeId"> & {
@@ -76,16 +77,6 @@ export default function EditableRecipe({
   const deleteSection = (sectionIdx: number) => {
     form.sections.splice(sectionIdx, 1);
     setForm({ ...form });
-  };
-
-  const secondsToHHmm = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds - hours * 3600) / 60);
-    return (
-      hours.toString().padStart(2, "0") +
-      ":" +
-      minutes.toString().padStart(2, "0")
-    );
   };
 
   const saveChanges = async () => {
