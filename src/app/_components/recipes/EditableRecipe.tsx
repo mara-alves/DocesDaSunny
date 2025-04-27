@@ -12,13 +12,18 @@ import EditableSection from "./EditableSection";
 
 export type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
   sections: (Omit<Section, "id" | "recipeId"> & {
-    ingredients: Omit<RecipeIngredient, "id" | "sectionId">[];
+    ingredients: {
+      quantity: string;
+      ingredient: { id: string | null; name: string };
+    }[];
   })[];
 };
 
+export type FrontendSection = FrontendRecipe["sections"][number];
+
 const EmptySection: FrontendRecipe["sections"][number] = {
   name: "",
-  ingredients: [{ quantity: "", ingredientName: "" }],
+  ingredients: [{ quantity: "", ingredient: { id: null, name: "" } }],
   preparation: [""],
 };
 
@@ -52,10 +57,10 @@ export default function EditableRecipe({
     setForm({ ...form, [key]: formattedValue });
   };
 
-  const editSection = <K extends keyof FrontendRecipe["sections"][number]>(
+  const editSection = <K extends keyof FrontendSection>(
     sectionIdx: number,
     key: K,
-    value: FrontendRecipe["sections"][number][K],
+    value: FrontendSection[K],
   ) => {
     form.sections[sectionIdx]![key] = value;
     setForm({ ...form });

@@ -2,7 +2,9 @@ import InputText from "../inputs/InputText";
 import { Plus, Trash, X } from "lucide-react";
 import InputTextarea from "../inputs/InputTextarea";
 import IngredientSelector from "./IngredientSelector";
-import type { FrontendRecipe } from "./EditableRecipe";
+import type { FrontendRecipe, FrontendSection } from "./EditableRecipe";
+
+export type FrontendSectionIngredient = FrontendSection["ingredients"][number];
 
 export default function EditableSection({
   section,
@@ -12,22 +14,19 @@ export default function EditableSection({
   section: FrontendRecipe["sections"][number];
   editSection: (
     key: keyof FrontendRecipe["sections"][number],
-    value:
-      | string
-      | string[]
-      | FrontendRecipe["sections"][number]["ingredients"][number][],
+    value: string | string[] | FrontendSectionIngredient[],
   ) => void;
   deleteSection: () => void;
 }) {
   const addIngredient = () => {
     const ing = section.ingredients;
-    ing.push({ quantity: "", ingredientName: "" });
+    ing.push({ quantity: "", ingredient: { id: null, name: "" } });
     editSection("ingredients", ing);
   };
-  const editIngredient = (
+  const editIngredient = <K extends keyof FrontendSectionIngredient>(
     ingredientIdx: number,
-    key: "quantity" | "ingredientName",
-    value: string,
+    key: K,
+    value: FrontendSectionIngredient[K],
   ) => {
     const ing = section.ingredients;
     ing[ingredientIdx]![key] = value;
@@ -72,7 +71,7 @@ export default function EditableSection({
         <div className="flex flex-col gap-4">
           <div className="heading text-xl">Ingredientes</div>
           {section.ingredients.map((item, idx) => (
-            <div className="flex flex-row items-center gap-2">
+            <div key={idx} className="flex flex-row items-center gap-2">
               <div className="bg-base-content size-2 shrink-0 rounded-full" />
               <InputText
                 value={item.quantity}
@@ -82,8 +81,8 @@ export default function EditableSection({
                 helper="qtd"
               />
               <IngredientSelector
-                value={item.ingredientName}
-                setValue={(e) => editIngredient(idx, "ingredientName", e)}
+                value={item.ingredient}
+                setValue={(e) => editIngredient(idx, "ingredient", e)}
               />
               <X className="icon-btn" onClick={() => deleteIngredient(idx)} />
             </div>

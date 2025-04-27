@@ -46,9 +46,60 @@ export const recipeRouter = createTRPCRouter({
         waitSeconds: z.number(),
         servings: z.number(),
         notes: z.string().nullish(),
+        sections: z.array(
+          z.object({
+            name: z.string(),
+            preparation: z.array(z.string()),
+            ingredients: z.array(
+              z.object({
+                ingredient: z.object({
+                  id: z.string().nullish(),
+                  name: z.string(),
+                }),
+                quantity: z.string(),
+              }),
+            ),
+          }),
+        ),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.db.recipe.create({ data: { ...input } });
+      const { sections, ...recipeBaseData } = input;
+      const { id: recipeId } = await ctx.db.recipe.create({
+        data: recipeBaseData,
+      });
+
+      for (let section of sections) {
+        const { id: sectionId } = await ctx.db.section.create({
+          data: {
+            name: section.name,
+            preparation: section.preparation,
+            recipeId: recipeId,
+          },
+        });
+
+        const sectionIngredients = [];
+        for (let ingredient of section.ingredients) {
+          let id = ingredient.ingredient.id;
+          if (!id) {
+            const res = await ctx.db.ingredient.create({
+              data: {
+                name: ingredient.ingredient.name,
+              },
+            });
+            id = res.id;
+          }
+          sectionIngredients.push({
+            sectionId,
+            ingredientId: id,
+            quantity: ingredient.quantity,
+          });
+        }
+        await ctx.db.recipeIngredient.createMany({
+          data: sectionIngredients,
+        });
+      }
+
+      return;
     }),
 });

@@ -75,7 +75,8 @@ model Recipe {
 }
 
 model Tag {
-    name        String      @id
+    id                      String                  @id @default(cuid())
+    name                    String                  @unique
     recipes     Recipe[]
 }
 
@@ -93,14 +94,15 @@ model Section {
 model RecipeIngredient {
     id               String     @id @default(cuid())
     quantity         String
-    ingredientName   String
-    ingredient       Ingredient @relation(fields: [ingredientName], references: [name])
+    ingredientId     String
+    ingredient       Ingredient @relation(fields: [ingredientId], references: [id])
 
     sectionId        String
     section          Section    @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
 model Ingredient {
-    name                    String                  @id
+    id                      String                  @id @default(cuid())
+    name                    String                  @unique
     recipeIngredients       RecipeIngredient[]
 }

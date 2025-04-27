@@ -7,13 +7,14 @@ import {
 } from "@headlessui/react";
 import { useState } from "react";
 import type { Ingredient } from "@prisma/client";
+import type { FrontendSectionIngredient } from "./EditableSection";
 
 export default function IngredientSelector({
   value,
   setValue,
 }: {
-  value: string;
-  setValue: (value: string) => void;
+  value: FrontendSectionIngredient["ingredient"];
+  setValue: (value: FrontendSectionIngredient["ingredient"]) => void;
 }) {
   const ingredientsQuery = api.recipe.listAllIngredients.useQuery();
   const [search, setSearch] = useState("");
