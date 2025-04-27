@@ -38,9 +38,9 @@ export default function RootLayout({
         <TRPCReactProvider>
           <HydrateClient>
             <SessionWrapper>
-              <div className="bg-background text-base-content h-screen w-screen overflow-auto">
+              <div className="bg-background text-base-content h-screen w-screen overflow-x-hidden overflow-y-auto">
                 <Topbar />
-                <div className="mx-auto mt-8 w-full px-6 md:px-12 xl:container">
+                <div className="mx-auto my-10 w-full px-6 md:px-12 xl:container">
                   {children}
                 </div>
               </div>
