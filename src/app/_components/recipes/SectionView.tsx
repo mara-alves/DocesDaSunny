@@ -14,10 +14,12 @@ export default function SectionView({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex w-full flex-row items-center gap-2">
-        <div className="heading text-2xl">{section.name}</div>
-        <div className="bg-primary h-0.5 w-full" />
-      </div>
+      {section.name && (
+        <div className="flex w-full flex-row items-center gap-2">
+          <div className="heading text-2xl">{section.name}</div>
+          <div className="bg-primary h-0.5 w-full" />
+        </div>
+      )}
 
       <div className="flex grid-cols-[0.5fr_1fr] flex-col gap-4 md:grid md:gap-8">
         {section.ingredients.length > 0 ? (

@@ -1,5 +1,12 @@
 import type { Recipe, Section } from "@prisma/client";
-import { ChevronLeft, CookingPot, Hourglass, Plus, Users } from "lucide-react";
+import {
+  ChevronLeft,
+  CookingPot,
+  Hourglass,
+  Plus,
+  Save,
+  Users,
+} from "lucide-react";
 import { Fragment, useState } from "react";
 import { api } from "~/trpc/react";
 import type { PutBlobResult } from "@vercel/blob";
@@ -45,9 +52,11 @@ export default function EditableRecipe({
 }: {
   recipe?: (FrontendRecipe & { id: string }) | null;
 }) {
-  const createQuery = api.recipe.create.useMutation();
   const [form, setForm] = useState<FrontendRecipe>(recipe ?? EmptyRecipe);
   const [image, setImage] = useState<File>();
+
+  const createQuery = api.recipe.create.useMutation();
+  const editQuery = api.recipe.edit.useMutation();
 
   const editForm = (key: keyof FrontendRecipe, value: string | number) => {
     let formattedValue: string | number = value;
@@ -89,7 +98,14 @@ export default function EditableRecipe({
       form.image = blob.url;
       setForm({ ...form });
     }
-    await createQuery.mutateAsync(form);
+
+    if (!recipe) {
+      await createQuery.mutateAsync(form);
+      redirect("/");
+    } else {
+      await editQuery.mutateAsync({ id: recipe.id, data: form });
+      redirect(`/${recipe.id}`);
+    }
   };
 
   return (
@@ -165,12 +181,9 @@ export default function EditableRecipe({
           setValue={(e) => editForm("notes", e)}
         />
 
-        <button
-          className="bg-base-content ml-auto flex cursor-pointer flex-row items-center gap-2 px-2 py-1 text-base font-semibold"
-          onClick={saveChanges}
-        >
-          <Plus />
-          Criar
+        <button className="btn mt-4 ml-auto text-xl" onClick={saveChanges}>
+          <Save />
+          {recipe ? "Guardar Alterações" : "Criar Receita"}
         </button>
       </div>
     </motion.div>
