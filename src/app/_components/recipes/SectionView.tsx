@@ -21,7 +21,7 @@ export default function SectionView({
 
       <div className="flex grid-cols-[0.5fr_1fr] flex-col gap-4 md:grid md:gap-8">
         {section.ingredients.length > 0 ? (
-          <div className="border-base-content flex h-fit flex-col gap-2 border-2 border-dashed p-3">
+          <div className="border-base-content flex h-fit flex-col gap-2 border-2 border-dashed px-4 py-3">
             <div className="heading text-xl">Ingredientes</div>
             {section.ingredients.map((item, idx) => (
               <div key={idx}>

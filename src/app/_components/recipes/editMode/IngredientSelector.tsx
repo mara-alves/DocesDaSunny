@@ -57,7 +57,7 @@ export default function IngredientSelector({
               value={{ id: null, name: search }}
               className="data-focus:bg-primary cursor-pointer px-2 py-1"
             >
-              Criar <span className="font-semibold">"{search}"</span>
+              Criar <span className="font-semibold">&quot;{search}&quot;</span>
             </ComboboxOption>
           )}
       </ComboboxOptions>

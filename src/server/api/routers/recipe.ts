@@ -87,7 +87,7 @@ export const recipeRouter = createTRPCRouter({
         data: recipeBaseData,
       });
 
-      for (let section of sections) {
+      for (const section of sections) {
         const { id: sectionId } = await ctx.db.section.create({
           data: {
             name: section.name,
@@ -97,7 +97,7 @@ export const recipeRouter = createTRPCRouter({
         });
 
         const sectionIngredients = [];
-        for (let ingredient of section.ingredients) {
+        for (const ingredient of section.ingredients) {
           let id = ingredient.ingredient.id;
           if (!id) {
             const res = await ctx.db.ingredient.create({

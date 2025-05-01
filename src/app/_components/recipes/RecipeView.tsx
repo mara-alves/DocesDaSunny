@@ -78,7 +78,12 @@ export default function RecipeView({
           <SectionView key={section.id} section={section} />
         ))}
 
-        {recipe.notes}
+        <div className="border-primary relative border-2 p-2">
+          <div className="heading bg-base absolute -top-6 -left-2 px-2 text-2xl">
+            Notas
+          </div>
+          <div className="bg-primary/50 px-4 py-2">{recipe.notes}</div>
+        </div>
       </div>
     </motion.div>
   );

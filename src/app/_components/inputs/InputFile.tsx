@@ -1,4 +1,5 @@
 import { Trash, Upload } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
 
@@ -31,22 +32,12 @@ export default function InputFile({
     }
   };
 
-  const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   useEffect(() => {
     if (file) {
-      readFileAsDataURL(file).then((url) => {
-        setPreviewImage(url);
-      });
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewImage(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
     } else setPreviewImage(null);
   }, [file]);
 
@@ -92,10 +83,11 @@ export default function InputFile({
         </div>
       )}
       {previewImage && (
-        <img
+        <Image
           src={previewImage}
           alt="preview"
-          className="absolute w-full opacity-25"
+          fill={true}
+          className="absolute w-full object-cover opacity-25"
         />
       )}
     </div>
