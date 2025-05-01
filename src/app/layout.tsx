@@ -6,7 +6,6 @@ import { Brygada_1918 } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { HydrateClient } from "~/trpc/server";
-import Topbar from "./_components/layout/Topbar";
 import SessionWrapper from "./_providers/SessionWrapper";
 
 export const metadata: Metadata = {
@@ -37,14 +36,7 @@ export default function RootLayout({
       <body>
         <TRPCReactProvider>
           <HydrateClient>
-            <SessionWrapper>
-              <div className="bg-background text-base-content h-screen w-screen overflow-x-hidden overflow-y-auto">
-                <Topbar />
-                <div className="mx-auto my-10 w-full px-6 md:px-12 xl:container">
-                  {children}
-                </div>
-              </div>
-            </SessionWrapper>
+            <SessionWrapper>{children}</SessionWrapper>
           </HydrateClient>
         </TRPCReactProvider>
       </body>

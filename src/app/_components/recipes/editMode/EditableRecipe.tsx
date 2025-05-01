@@ -11,6 +11,7 @@ import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
 import InputTime from "../../inputs/InputTime";
 import { motion } from "framer-motion";
+import { redirect } from "next/navigation";
 
 export type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
   sections: (Omit<Section, "id" | "recipeId"> & {
@@ -41,10 +42,8 @@ const EmptyRecipe: FrontendRecipe = {
 
 export default function EditableRecipe({
   recipe = null,
-  goBack,
 }: {
-  recipe?: FrontendRecipe | null;
-  goBack: () => void;
+  recipe?: (FrontendRecipe & { id: string }) | null;
 }) {
   const createQuery = api.recipe.create.useMutation();
   const [form, setForm] = useState<FrontendRecipe>(recipe ?? EmptyRecipe);
@@ -91,20 +90,22 @@ export default function EditableRecipe({
       setForm({ ...form });
     }
     await createQuery.mutateAsync(form);
-    goBack();
   };
 
   return (
     <motion.div
       layoutId={(recipe?.name ?? "new") + " card"}
-      className="bg-base absolute top-0 z-10 w-full shadow-lg"
+      className="bg-base w-full shadow-lg"
     >
       <div className="p-4">
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
-          onClick={goBack}
+          onClick={() => {
+            if (recipe) redirect(`/${recipe.id}`);
+            else redirect("/");
+          }}
         >
-          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />{" "}
+          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />
           Voltar
         </button>
       </div>

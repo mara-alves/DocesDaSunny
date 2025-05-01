@@ -1,31 +1,23 @@
 import type { Recipe } from "@prisma/client";
 import { motion } from "framer-motion";
+import { redirect } from "next/navigation";
+import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 import NoImage from "~/app/_images/NoImage.png";
 
-export default function RecipeCard({
-  recipe,
-  setRecipe,
-  selectedRecipeId,
-  isListVisible,
-}: {
-  recipe: Recipe;
-  setRecipe: (id: Recipe) => void;
-  selectedRecipeId?: string;
-  isListVisible?: boolean;
-}) {
+export default function RecipeCard({ recipe }: { recipe: Recipe }) {
+  const { recipe: active, setRecipe } = useRecipeContext();
+
   return (
     <motion.div
       layoutId={(recipe.name ?? "new") + " card"}
-      style={{
-        transition:
-          selectedRecipeId === recipe.id ? "none" : "opacity 0.5s ease",
-        opacity: isListVisible || selectedRecipeId == recipe.id ? 1 : 0,
-      }}
       className={
         "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg " +
-        (selectedRecipeId == recipe.id ? " z-10" : " z-0")
+        (active?.id == recipe.id ? " z-10" : " z-0")
       }
-      onClick={() => setRecipe(recipe)}
+      onClick={() => {
+        setRecipe(recipe);
+        redirect(`/${recipe.id}`);
+      }}
     >
       <motion.div
         layoutId={recipe.name + " image container"}
