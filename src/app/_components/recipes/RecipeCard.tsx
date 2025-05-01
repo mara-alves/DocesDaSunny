@@ -15,7 +15,7 @@ export default function RecipeCard({
 }) {
   return (
     <motion.div
-      layoutId={recipe.name + " card"}
+      layoutId={(recipe.name ?? "new") + " card"}
       style={{
         transition:
           selectedRecipeId === recipe.id ? "none" : "opacity 0.5s ease",

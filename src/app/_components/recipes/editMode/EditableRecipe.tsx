@@ -10,6 +10,7 @@ import InputNumber from "../../inputs/InputNumber";
 import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
 import InputTime from "../../inputs/InputTime";
+import { motion } from "framer-motion";
 
 export type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
   sections: (Omit<Section, "id" | "recipeId"> & {
@@ -39,14 +40,14 @@ const EmptyRecipe: FrontendRecipe = {
 };
 
 export default function EditableRecipe({
-  recipe = EmptyRecipe,
+  recipe = null,
   goBack,
 }: {
-  recipe?: FrontendRecipe;
+  recipe?: FrontendRecipe | null;
   goBack: () => void;
 }) {
   const createQuery = api.recipe.create.useMutation();
-  const [form, setForm] = useState<FrontendRecipe>(recipe);
+  const [form, setForm] = useState<FrontendRecipe>(recipe ?? EmptyRecipe);
   const [image, setImage] = useState<File>();
 
   const editForm = (key: keyof FrontendRecipe, value: string | number) => {
@@ -94,7 +95,10 @@ export default function EditableRecipe({
   };
 
   return (
-    <div className="bg-base absolute top-0 z-10 w-full shadow-lg">
+    <motion.div
+      layoutId={(recipe?.name ?? "new") + " card"}
+      className="bg-base absolute top-0 z-10 w-full shadow-lg"
+    >
       <div className="p-4">
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
@@ -168,6 +172,6 @@ export default function EditableRecipe({
           Criar
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

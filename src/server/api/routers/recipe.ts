@@ -44,6 +44,7 @@ export const recipeRouter = createTRPCRouter({
                   quantity: true,
                   ingredient: {
                     select: {
+                      id: true,
                       name: true,
                     },
                   },

@@ -8,7 +8,7 @@ import {
   Plus,
   Users,
 } from "lucide-react";
-import { api } from "~/trpc/react";
+import { api, type RouterOutputs } from "~/trpc/react";
 import NoImage from "~/app/_images/NoImage.png";
 import { secondsToPrettyString } from "~/utils/time";
 import { useSession } from "next-auth/react";
@@ -17,9 +17,11 @@ import SectionView from "./SectionView";
 export default function RecipeView({
   recipe,
   goBack,
+  edit,
 }: {
   recipe: Recipe;
   goBack: () => void;
+  edit: (value: RouterOutputs["recipe"]["getById"]) => void;
 }) {
   const { data: session } = useSession();
   const { data: fullRecipe } = api.recipe.getById.useQuery({ id: recipe.id });
@@ -38,7 +40,10 @@ export default function RecipeView({
           Voltar
         </button>
         {session?.user && (
-          <button className="icon-btn ml-auto">
+          <button
+            className="icon-btn ml-auto"
+            onClick={() => fullRecipe && edit(fullRecipe)}
+          >
             <Pencil />
           </button>
         )}

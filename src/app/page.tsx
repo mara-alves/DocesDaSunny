@@ -8,7 +8,10 @@ import RecipeView from "./_components/recipes/RecipeView";
 import type { Recipe } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
-import EditableRecipe from "./_components/recipes/editMode/EditableRecipe";
+import EditableRecipe, {
+  type FrontendRecipe,
+} from "./_components/recipes/editMode/EditableRecipe";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -18,6 +21,7 @@ export default function Home() {
 
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const [toEdit, setToEdit] = useState<FrontendRecipe | null>(null);
 
   return (
     <div className="flex h-full w-full flex-col gap-12 md:flex-row">
@@ -26,6 +30,7 @@ export default function Home() {
         setSearch={setSearch}
         resultsCount={listRecipes.data?.length ?? 0}
       />
+
       <div className="relative flex flex-col">
         <div
           className={
@@ -34,20 +39,26 @@ export default function Home() {
           }
         >
           {session?.user && (
-            <div
+            <motion.div
+              layoutId={"new card"}
               onClick={() => {
                 setSelectedRecipe(null);
                 setOpen(true);
               }}
+              style={{
+                transition: !selectedRecipe ? "none" : "opacity 0.5s ease",
+                opacity: !open || (open && !selectedRecipe) ? 1 : 0,
+              }}
               className={
-                "bg-primary border-base-content flex cursor-pointer flex-col items-center justify-center border-2 p-8 font-semibold transition " +
-                (open ? "opacity-0" : "opacity-100")
+                "bg-base z-0 flex cursor-pointer flex-col items-center justify-center p-8 text-center font-semibold shadow-lg" +
+                (!selectedRecipe ? " z-10" : " z-0")
               }
             >
               <Plus className="size-16" />
               Adicionar Receita
-            </div>
+            </motion.div>
           )}
+
           {listRecipes.data?.map((recipe) => (
             <RecipeCard
               key={recipe.id}
@@ -61,9 +72,22 @@ export default function Home() {
             />
           ))}
         </div>
-        {open &&
+        {toEdit ? (
+          <EditableRecipe
+            recipe={toEdit}
+            goBack={async () => {
+              await listRecipes.refetch();
+              setToEdit(null);
+            }}
+          />
+        ) : (
+          open &&
           (selectedRecipe ? (
-            <RecipeView recipe={selectedRecipe} goBack={() => setOpen(false)} />
+            <RecipeView
+              recipe={selectedRecipe}
+              goBack={() => setOpen(false)}
+              edit={(e) => setToEdit(e)}
+            />
           ) : (
             <EditableRecipe
               goBack={async () => {
@@ -71,7 +95,8 @@ export default function Home() {
                 setOpen(false);
               }}
             />
-          ))}
+          ))
+        )}
       </div>
     </div>
   );
