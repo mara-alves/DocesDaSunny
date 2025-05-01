@@ -1,19 +1,20 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import { useState } from "react";
 import { LoaderCircle, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import { motion } from "framer-motion";
 import RecipeCard from "../_components/recipes/RecipeCard";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useRecipeContext } from "../_contexts/RecipeContext";
 
 export default function Home() {
   const { data: session } = useSession();
-  const [search, setSearch] = useState("");
-  const listRecipes = api.recipe.list.useQuery({ search });
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("search") ?? "";
+
+  const listRecipes = api.recipe.list.useQuery({ search: searchTerm });
 
   const { recipe: prefetched, setRecipe } = useRecipeContext();
 
@@ -35,12 +36,15 @@ export default function Home() {
             redirect("/new");
           }}
           className={
-            "bg-base flex w-full cursor-pointer flex-col items-center justify-center p-4 font-semibold shadow-lg" +
+            "bg-base flex w-full cursor-pointer flex-col items-center justify-center gap-4 p-4 font-semibold shadow-lg" +
             (!prefetched ? " z-10" : " z-0")
           }
         >
-          <Plus className="size-16" />
-          Adicionar Receita
+          <div className="flex aspect-square w-full flex-col items-center justify-center">
+            <Plus className="mt-12 size-16" />
+            Adicionar Receita
+          </div>
+          <div className="h-12" />
         </motion.div>
       )}
 

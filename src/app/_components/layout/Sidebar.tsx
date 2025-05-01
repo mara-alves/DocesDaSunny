@@ -28,7 +28,7 @@ export default function Sidebar({
           title="Filtrar Receitas"
           content={
             <div className="flex flex-col gap-3 p-3">
-              <Search value={search} setValue={setSearch} />
+              <Search />
             </div>
           }
         />
