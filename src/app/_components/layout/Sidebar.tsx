@@ -4,16 +4,9 @@ import Gradient from "~/app/_images/Gradient.png";
 import StyledDisclosure from "./StyledDisclosure";
 import Image from "next/image";
 import Search from "../inputs/Search";
+import { Suspense } from "react";
 
-export default function Sidebar({
-  search,
-  setSearch,
-  resultsCount,
-}: {
-  search: string;
-  setSearch: (value: string) => void;
-  resultsCount: number;
-}) {
+export default function Sidebar({ resultsCount }: { resultsCount: number }) {
   return (
     <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit">
       <Logo />
@@ -28,7 +21,9 @@ export default function Sidebar({
           title="Filtrar Receitas"
           content={
             <div className="flex flex-col gap-3 p-3">
-              <Search />
+              <Suspense>
+                <Search />
+              </Suspense>
             </div>
           }
         />

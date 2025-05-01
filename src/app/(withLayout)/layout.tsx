@@ -9,20 +9,16 @@ import { RecipeProvider } from "../_contexts/RecipeContext";
 export default function SidebarLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(""); // TODO: Delete and find another way of having count here
   const listRecipes = api.recipe.list.useQuery({ search });
 
   return (
     <RecipeProvider>
-      <div className="bg-background text-base-content h-screen w-screen overflow-x-hidden overflow-y-auto">
+      <div className="bg-background text-base-content h-screen w-screen overflow-x-hidden overflow-y-scroll">
         <Topbar />
         <div className="mx-auto my-10 w-full px-6 md:px-12 xl:container">
           <div className="flex h-full w-full flex-col gap-12 md:flex-row">
-            <Sidebar
-              search={search}
-              setSearch={setSearch}
-              resultsCount={listRecipes.data?.length ?? 0}
-            />
+            <Sidebar resultsCount={listRecipes.data?.length ?? 0} />
 
             <div className="relative flex w-full flex-col">{children}</div>
           </div>
