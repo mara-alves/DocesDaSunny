@@ -26,7 +26,7 @@ export default function Home() {
       setCount(result.length);
       setDeferredResult(result);
     }
-  }, [listRecipes.data]);
+  }, [listRecipes.data, setCount]);
 
   if (!deferredResult) {
     return (

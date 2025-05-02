@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import {
-  createTRPCContext,
+  type createTRPCContext,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
@@ -88,7 +88,7 @@ export const recipeRouter = createTRPCRouter({
       const { id: recipeId } = await ctx.db.recipe.create({
         data: recipeBaseData,
       });
-      createSectionsWithIngredients(ctx, recipeId, sections);
+      await createSectionsWithIngredients(ctx, recipeId, sections);
       return;
     }),
 
@@ -103,7 +103,7 @@ export const recipeRouter = createTRPCRouter({
         data: recipeBaseData,
       });
       await ctx.db.section.deleteMany({ where: { recipeId: input.id } });
-      createSectionsWithIngredients(ctx, recipeId, sections);
+      await createSectionsWithIngredients(ctx, recipeId, sections);
       return;
     }),
 });

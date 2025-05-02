@@ -4,7 +4,7 @@ import Gradient from "~/app/_images/Gradient.png";
 import StyledDisclosure from "./StyledDisclosure";
 import Image from "next/image";
 import Search from "../inputs/Search";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useFiltersContext } from "~/app/_contexts/FiltersContext";
 
@@ -15,18 +15,21 @@ export default function Sidebar() {
     "filters",
   );
 
-  const switchOpen = (value: "filters" | "converter") => {
-    if (selected !== value) {
-      setSelected(null);
-      setTimeout(() => {
-        setSelected(value);
-      }, 200); // = closing transition duration
-    }
-  };
+  const switchOpen = useCallback(
+    (value: "filters" | "converter") => {
+      if (selected !== value) {
+        setSelected(null);
+        setTimeout(() => {
+          setSelected(value);
+        }, 200); // = closing transition duration
+      }
+    },
+    [selected],
+  );
 
   useEffect(() => {
-    if (pathname != "/") switchOpen("converter");
-    else switchOpen("filters");
+    if (pathname != "/") setSelected("converter");
+    else setSelected("filters");
   }, [pathname]);
 
   return (
@@ -62,7 +65,7 @@ export default function Sidebar() {
         />
       </div>
       {pathname === "/" && (
-        <div className="heading text-lg">
+        <div className="font-serif text-lg italic">
           {count ?? "?"} resultado{count != 1 ? "s" : ""}
         </div>
       )}
