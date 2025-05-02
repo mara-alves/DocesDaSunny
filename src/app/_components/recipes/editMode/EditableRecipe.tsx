@@ -1,4 +1,3 @@
-import type { Recipe, Section } from "@prisma/client";
 import {
   ChevronLeft,
   CookingPot,
@@ -19,19 +18,12 @@ import InputTextarea from "../../inputs/InputTextarea";
 import InputTime from "../../inputs/InputTime";
 import { motion } from "framer-motion";
 import { redirect } from "next/navigation";
+import type {
+  FrontendRecipe,
+  FrontendSection,
+} from "~/server/api/routers/recipe";
 
-export type FrontendRecipe = Omit<Recipe, "id" | "createdAt"> & {
-  sections: (Omit<Section, "id" | "recipeId"> & {
-    ingredients: {
-      quantity: string;
-      ingredient: { id: string | null; name: string };
-    }[];
-  })[];
-};
-
-export type FrontendSection = FrontendRecipe["sections"][number];
-
-const EmptySection: FrontendRecipe["sections"][number] = {
+const EmptySection: FrontendSection = {
   name: "",
   ingredients: [{ quantity: "", ingredient: { id: null, name: "" } }],
   preparation: [""],

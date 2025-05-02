@@ -7,19 +7,21 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+const ingredientInput = z.object({
+  ingredient: z.object({
+    id: z.string().nullish(),
+    name: z.string(),
+  }),
+  quantity: z.string(),
+});
+export type FrontendSectionIngredient = z.infer<typeof ingredientInput>;
+
 const sectionInput = z.object({
   name: z.string(),
   preparation: z.array(z.string()),
-  ingredients: z.array(
-    z.object({
-      ingredient: z.object({
-        id: z.string().nullish(),
-        name: z.string(),
-      }),
-      quantity: z.string(),
-    }),
-  ),
+  ingredients: z.array(ingredientInput),
 });
+export type FrontendSection = z.infer<typeof sectionInput>;
 
 const recipeInput = z.object({
   name: z.string(),
@@ -30,6 +32,7 @@ const recipeInput = z.object({
   notes: z.string().nullish(),
   sections: z.array(sectionInput),
 });
+export type FrontendRecipe = z.infer<typeof recipeInput>;
 
 export const recipeRouter = createTRPCRouter({
   list: publicProcedure

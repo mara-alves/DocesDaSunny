@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { useState } from "react";
 import type { Ingredient } from "@prisma/client";
-import type { FrontendSectionIngredient } from "./EditableSection";
+import type { FrontendSectionIngredient } from "~/server/api/routers/recipe";
 
 export default function IngredientSelector({
   value,

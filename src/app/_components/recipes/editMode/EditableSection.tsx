@@ -1,19 +1,20 @@
 import { Plus, Trash, X } from "lucide-react";
 import IngredientSelector from "./IngredientSelector";
-import type { FrontendRecipe, FrontendSection } from "./EditableRecipe";
 import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
-
-export type FrontendSectionIngredient = FrontendSection["ingredients"][number];
+import type {
+  FrontendSection,
+  FrontendSectionIngredient,
+} from "~/server/api/routers/recipe";
 
 export default function EditableSection({
   section,
   editSection,
   deleteSection,
 }: {
-  section: FrontendRecipe["sections"][number];
+  section: FrontendSection;
   editSection: (
-    key: keyof FrontendRecipe["sections"][number],
+    key: keyof FrontendSection,
     value: string | string[] | FrontendSectionIngredient[],
   ) => void;
   deleteSection: () => void;
