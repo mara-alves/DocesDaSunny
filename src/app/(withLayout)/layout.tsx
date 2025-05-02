@@ -16,8 +16,9 @@ export default function SidebarLayout({
           <div className="mx-auto my-10 w-full px-6 md:px-12 xl:container">
             <div className="flex h-full w-full flex-col gap-12 md:flex-row">
               <Sidebar />
-
-              <div className="relative flex w-full flex-col">{children}</div>
+              <div className="relative z-10 flex w-full flex-col">
+                {children}
+              </div>
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function RecipeView() {
       layoutId={recipe?.name + " card"}
       className="bg-base w-full shadow-lg"
     >
-      <div className="z-10 flex flex-row px-6 py-4">
+      <div className="flex flex-row px-6 py-4">
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
           onClick={() => redirect("/")}

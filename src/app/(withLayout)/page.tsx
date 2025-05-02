@@ -37,7 +37,7 @@ export default function Home() {
   }
 
   return (
-    <div className="z-10 flex w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+    <div className="flex w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {session?.user && (
         <motion.div
           layoutId={"new card"}

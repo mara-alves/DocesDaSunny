@@ -16,7 +16,7 @@ export default function IngredientSelector({
   value: FrontendSectionIngredient["ingredient"];
   setValue: (value: FrontendSectionIngredient["ingredient"]) => void;
 }) {
-  const ingredientsQuery = api.recipe.listAllIngredients.useQuery();
+  const ingredientsQuery = api.ingredient.list.useQuery();
   const [search, setSearch] = useState("");
 
   const filteredIngredients =
@@ -40,7 +40,7 @@ export default function IngredientSelector({
       />
       <ComboboxOptions
         anchor="bottom start"
-        className="bg-base text-base-content z-10 w-(--input-width) border-x-2 border-b-2 shadow-lg"
+        className="bg-base text-base-content z-10 !max-h-48 w-(--input-width) overflow-y-auto border-2 shadow-lg"
       >
         {filteredIngredients.map((e) => (
           <ComboboxOption

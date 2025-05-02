@@ -1,11 +1,12 @@
 import { z } from "zod";
-
 import {
   type createTRPCContext,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+
+/* ---------------------------------- Types --------------------------------- */
 
 const ingredientInput = z.object({
   ingredient: z.object({
@@ -34,6 +35,8 @@ const recipeInput = z.object({
 });
 export type FrontendRecipe = z.infer<typeof recipeInput>;
 
+/* --------------------------------- Router --------------------------------- */
+
 export const recipeRouter = createTRPCRouter({
   list: publicProcedure
     .input(z.object({ search: z.string() }))
@@ -50,14 +53,6 @@ export const recipeRouter = createTRPCRouter({
         },
       });
     }),
-
-  listAllIngredients: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.ingredient.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    });
-  }),
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -114,7 +109,7 @@ export const recipeRouter = createTRPCRouter({
 const createSectionsWithIngredients = async (
   ctx: Awaited<ReturnType<typeof createTRPCContext>>,
   recipeId: string,
-  sections: z.infer<typeof sectionInput>[],
+  sections: FrontendSection[],
 ) => {
   for (const section of sections) {
     const { id: sectionId } = await ctx.db.section.create({

@@ -69,10 +69,10 @@ export default function EditableSection({
       </div>
 
       <div className="divide-primary flex grid-cols-[0.5fr_1fr] flex-col gap-4 divide-x-2 md:grid">
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <div className="heading text-xl">Ingredientes</div>
           {section.ingredients.map((item, idx) => (
-            <div key={idx} className="flex flex-row items-center gap-2">
+            <div key={idx} className="flex w-full flex-row items-center gap-2">
               <div className="bg-base-content size-2 shrink-0 rounded-full" />
               <InputText
                 value={item.quantity}
