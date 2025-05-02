@@ -1,18 +1,21 @@
 import { Trash, Upload } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
 
 export default function InputFile({
   file,
   setFile,
+  initialUrl = null,
 }: {
   file?: File;
   setFile: (file?: File) => void;
+  initialUrl?: string | null;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [isDragActive, setIsDragActive] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(initialUrl);
+  let objectUrl: string;
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -20,7 +23,7 @@ export default function InputFile({
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles.length > 0) {
       const newFile = Array.from(droppedFiles)[0];
-      setFile(newFile);
+      setFileAndPreview(newFile);
     }
   };
 
@@ -28,18 +31,21 @@ export default function InputFile({
     const selectedFiles = e.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
       const newFile = Array.from(selectedFiles)[0];
-      setFile(newFile);
+      setFileAndPreview(newFile);
     }
   };
 
-  useEffect(() => {
+  const setFileAndPreview = (file?: File) => {
+    URL.revokeObjectURL(objectUrl);
     if (file) {
-      const objectUrl = URL.createObjectURL(file);
+      setFile(file);
+      objectUrl = URL.createObjectURL(file);
       setPreviewImage(objectUrl);
-
-      return () => URL.revokeObjectURL(objectUrl);
-    } else setPreviewImage(null);
-  }, [file]);
+    } else {
+      setFile();
+      setPreviewImage(null);
+    }
+  };
 
   return (
     <div
@@ -76,7 +82,7 @@ export default function InputFile({
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
-            setFile();
+            setFileAndPreview();
           }}
         >
           <Trash />
