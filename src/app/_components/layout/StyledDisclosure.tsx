@@ -8,10 +8,14 @@ import { ChevronDown } from "lucide-react";
 import { type ReactNode } from "react";
 
 export default function StyledDisclosure({
+  open,
+  setOpen,
   icon,
   title,
   content,
 }: {
+  open: boolean;
+  setOpen: () => void;
   icon: ReactNode;
   title: string;
   content: ReactNode;
@@ -20,9 +24,12 @@ export default function StyledDisclosure({
     <Disclosure
       as={motion.div}
       layout
+      transition={{ duration: 0.2 }}
       className={"bg-primary border-base-content border-2"}
+      defaultOpen={open}
+      onClick={setOpen}
     >
-      {({ open }) => (
+      {() => (
         <>
           <DisclosureButton className="flex w-full flex-row items-center gap-4 px-4 py-2 font-semibold">
             {icon}

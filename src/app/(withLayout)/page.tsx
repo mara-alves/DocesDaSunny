@@ -3,22 +3,32 @@
 import { api } from "~/trpc/react";
 import { LoaderCircle, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
-
 import { motion } from "framer-motion";
 import RecipeCard from "../_components/recipes/RecipeCard";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useRecipeContext } from "../_contexts/RecipeContext";
+import { useEffect, useState } from "react";
+import { useFiltersContext } from "../_contexts/FiltersContext";
+import { useDebounce } from "@uidotdev/usehooks";
 
 export default function Home() {
   const { data: session } = useSession();
-  const searchParams = useSearchParams();
-  const searchTerm = searchParams.get("search") ?? "";
-
-  const listRecipes = api.recipe.list.useQuery({ search: searchTerm });
-
+  const { search, setCount } = useFiltersContext();
   const { recipe: prefetched, setRecipe } = useRecipeContext();
 
-  if (listRecipes.isLoading) {
+  const debouncedSearchTerm = useDebounce(search, 200);
+  const listRecipes = api.recipe.list.useQuery({ search: debouncedSearchTerm });
+  const [deferredResult, setDeferredResult] = useState(listRecipes.data);
+
+  useEffect(() => {
+    const result = listRecipes.data;
+    if (result) {
+      setCount(result.length);
+      setDeferredResult(result);
+    }
+  }, [listRecipes.data]);
+
+  if (!deferredResult) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center font-semibold">
         <LoaderCircle className="animate-spin" size={50} />A carregar...
@@ -48,7 +58,7 @@ export default function Home() {
         </motion.div>
       )}
 
-      {listRecipes.data?.map((recipe) => (
+      {deferredResult?.map((recipe) => (
         <RecipeCard key={recipe.id} recipe={recipe} />
       ))}
     </div>
