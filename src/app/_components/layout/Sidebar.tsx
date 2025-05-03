@@ -10,7 +10,7 @@ import { useFiltersContext } from "~/app/_contexts/FiltersContext";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { count } = useFiltersContext();
+  const { count, setOrderBy } = useFiltersContext();
   const [selected, setSelected] = useState<"filters" | "converter" | null>(
     "filters",
   );
@@ -49,9 +49,13 @@ export default function Sidebar() {
             title="Filtrar Receitas"
             content={
               <div className="flex flex-col gap-3 p-3">
-                <Suspense>
-                  <Search />
-                </Suspense>
+                <Search />
+                <div
+                  className="bg-base w-full p-2"
+                  onClick={() => setOrderBy("alphabetical")}
+                >
+                  Muda a ordem!
+                </div>
               </div>
             }
           />

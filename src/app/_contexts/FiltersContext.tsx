@@ -1,10 +1,15 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import type { orderOption } from "~/server/api/routers/recipe";
+
+type OrderOption = (typeof orderOption)[number];
 
 type FiltersContextType = {
   search: string;
   setSearch: (value: string) => void;
+  orderBy: OrderOption;
+  setOrderBy: (value: OrderOption) => void;
   count?: number;
   setCount: (value?: number) => void;
 };
@@ -24,10 +29,13 @@ export const FiltersProvider = ({
   children: React.ReactNode;
 }) => {
   const [search, setSearch] = useState<string>("");
+  const [orderBy, setOrderBy] = useState<OrderOption>("creation");
   const [count, setCount] = useState<number>();
 
   return (
-    <FiltersContext.Provider value={{ search, setSearch, count, setCount }}>
+    <FiltersContext.Provider
+      value={{ search, setSearch, orderBy, setOrderBy, count, setCount }}
+    >
       {children}
     </FiltersContext.Provider>
   );

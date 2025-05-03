@@ -7,6 +7,7 @@ import {
 } from "~/server/api/trpc";
 
 /* ---------------------------------- Types --------------------------------- */
+export const orderOption = ["creation", "alphabetical", "type"] as const;
 
 const ingredientInput = z.object({
   ingredient: z.object({
@@ -39,8 +40,20 @@ export type FrontendRecipe = z.infer<typeof recipeInput>;
 
 export const recipeRouter = createTRPCRouter({
   list: publicProcedure
-    .input(z.object({ search: z.string() }))
+    .input(
+      z.object({
+        search: z.string(),
+        orderBy: z.enum(orderOption),
+      }),
+    )
     .query(async ({ input, ctx }) => {
+      let orderBy;
+      if (input.orderBy === "creation")
+        orderBy = { createdAt: "asc" as "asc" | "desc" };
+      else if (input.orderBy === "alphabetical")
+        orderBy = { name: "asc" as "asc" | "desc" };
+      else orderBy = { name: "asc" as "asc" | "desc" };
+
       return ctx.db.recipe.findMany({
         where: {
           name: {
@@ -48,9 +61,7 @@ export const recipeRouter = createTRPCRouter({
             mode: "insensitive",
           },
         },
-        orderBy: {
-          createdAt: "asc",
-        },
+        orderBy: orderBy,
       });
     }),
 
