@@ -10,6 +10,9 @@ export default function EditRecipe() {
 
   const { data: recipe } = api.recipe.getById.useQuery({ id: recipeId });
 
-  if (!recipe) return <div className="bg-base w-full shadow-lg" />;
-  return <EditableRecipe recipe={recipe} />;
+  return (
+    <div className="bg-base w-full shadow-lg">
+      <EditableRecipe recipe={recipe} />
+    </div>
+  );
 }

@@ -16,7 +16,6 @@ import InputNumber from "../../inputs/InputNumber";
 import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
 import InputTime from "../../inputs/InputTime";
-import { motion } from "framer-motion";
 import { redirect } from "next/navigation";
 import type {
   FrontendRecipe,
@@ -101,10 +100,7 @@ export default function EditableRecipe({
   };
 
   return (
-    <motion.div
-      layoutId={(recipe?.name ?? "new") + " card"}
-      className="bg-base w-full shadow-lg"
-    >
+    <>
       <div className="p-4">
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
@@ -178,6 +174,6 @@ export default function EditableRecipe({
           {recipe ? "Guardar Alterações" : "Criar Receita"}
         </button>
       </div>
-    </motion.div>
+    </>
   );
 }
