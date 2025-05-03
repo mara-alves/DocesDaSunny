@@ -18,8 +18,8 @@ export default function IngredientSelector({
 }) {
   const ingredientsQuery = api.ingredient.list.useQuery();
   const createQuery = api.ingredient.create.useMutation({
-    onSuccess: (e) => {
-      ingredientsQuery.refetch();
+    onSuccess: async (e) => {
+      await ingredientsQuery.refetch();
       setValue(e);
     },
   });

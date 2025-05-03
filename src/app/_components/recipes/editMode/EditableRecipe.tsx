@@ -118,7 +118,7 @@ export default function EditableRecipe({
         </button>
       </div>
 
-      <InputFile initialUrl={recipe?.image} file={image} setFile={setImage} />
+      <InputFile initialUrl={recipe?.image} setFile={setImage} />
 
       <div className="flex w-full flex-col gap-4 p-4">
         <InputText

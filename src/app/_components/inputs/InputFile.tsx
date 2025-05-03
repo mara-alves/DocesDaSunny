@@ -4,11 +4,9 @@ import { useRef, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
 
 export default function InputFile({
-  file,
   setFile,
   initialUrl = null,
 }: {
-  file?: File;
   setFile: (file?: File) => void;
   initialUrl?: string | null;
 }) {
