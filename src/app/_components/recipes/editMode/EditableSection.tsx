@@ -57,7 +57,7 @@ export default function EditableSection({
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex w-full flex-row items-start gap-4">
+      <div className="flex w-full flex-row">
         <InputText
           label="Nome da Secção"
           helper="Opcional, p.ex Base, Ganache, Praliné..."
@@ -65,11 +65,11 @@ export default function EditableSection({
           setValue={(e) => editSection("name", e)}
           style="border-2 border-dashed border-primary-darker px-2 py-1 heading text-xl"
         />
-        <Trash className="icon-btn" onClick={deleteSection} />
+        <Trash className="icon-btn w-max" onClick={deleteSection} />
       </div>
 
-      <div className="divide-primary flex grid-cols-[0.5fr_1fr] flex-col gap-4 divide-x-2 md:grid">
-        <div className="flex w-full flex-col gap-4">
+      <div className="divide-primary flex grid-cols-[0.5fr_1fr] flex-col md:grid md:divide-x-2">
+        <div className="flex w-full flex-col gap-4 md:pr-4">
           <div className="heading text-xl">Ingredientes</div>
           {section.ingredients.map((item, idx) => (
             <div key={idx} className="flex w-full flex-row items-center gap-2">
@@ -96,7 +96,7 @@ export default function EditableSection({
           </button>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:pl-4">
           <div className="heading text-xl">Preparação</div>
           {section.preparation.map((step, idx) => (
             <div key={idx} className="flex flex-row justify-start gap-2">

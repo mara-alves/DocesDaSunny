@@ -21,6 +21,7 @@ export default function InputText({
         onChange={(e) => setValue(e.target.value)}
         className={style}
         placeholder={helper ?? ""}
+        size={2}
       />
     </div>
   );

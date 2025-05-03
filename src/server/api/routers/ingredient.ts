@@ -17,7 +17,7 @@ export const ingredientRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string().min(3) }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.ingredient.create({
+      return await ctx.db.ingredient.create({
         data: {
           name: input.name,
         },

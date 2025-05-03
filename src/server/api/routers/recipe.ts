@@ -112,33 +112,22 @@ const createSectionsWithIngredients = async (
   sections: FrontendSection[],
 ) => {
   for (const section of sections) {
-    const { id: sectionId } = await ctx.db.section.create({
+    await ctx.db.section.create({
       data: {
         name: section.name,
         preparation: section.preparation,
         recipeId: recipeId,
-      },
-    });
-
-    const sectionIngredients = [];
-    for (const ingredient of section.ingredients) {
-      let id = ingredient.ingredient.id;
-      if (!id) {
-        const res = await ctx.db.ingredient.create({
-          data: {
-            name: ingredient.ingredient.name,
+        ingredients: {
+          createMany: {
+            data: section.ingredients
+              .filter((e) => !!e.ingredient.id)
+              .map((e) => ({
+                ingredientId: e.ingredient.id!,
+                quantity: e.quantity,
+              })),
           },
-        });
-        id = res.id;
-      }
-      sectionIngredients.push({
-        sectionId,
-        ingredientId: id,
-        quantity: ingredient.quantity,
-      });
-    }
-    await ctx.db.recipeIngredient.createMany({
-      data: sectionIngredients,
+        },
+      },
     });
   }
 };

@@ -27,7 +27,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
           layoutId={recipe.name + " image"}
           src={recipe.image ?? NoImage.src}
           alt={recipe.name + " photo"}
-          className="w-full"
+          className="min-h-full min-w-full object-cover"
         />
         <motion.div
           layoutId={recipe.name + " gradient"}

@@ -17,6 +17,12 @@ export default function IngredientSelector({
   setValue: (value: FrontendSectionIngredient["ingredient"]) => void;
 }) {
   const ingredientsQuery = api.ingredient.list.useQuery();
+  const createQuery = api.ingredient.create.useMutation({
+    onSuccess: (e) => {
+      ingredientsQuery.refetch();
+      setValue(e);
+    },
+  });
   const [search, setSearch] = useState("");
 
   const filteredIngredients =
@@ -30,7 +36,12 @@ export default function IngredientSelector({
     <Combobox
       immediate
       value={value}
-      onChange={setValue}
+      onChange={(e) => {
+        setValue(e ?? { id: null, name: "" });
+        if (e?.id === null) {
+          createQuery.mutate({ name: e.name });
+        }
+      }}
       onClose={() => setSearch("")}
     >
       <ComboboxInput
