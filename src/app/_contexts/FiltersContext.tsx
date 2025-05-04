@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from "react";
 import type { orderOption } from "~/server/api/routers/recipe";
 
-type OrderOption = (typeof orderOption)[number];
+export type OrderOption = (typeof orderOption)[number];
 
 type FiltersContextType = {
   search: string;

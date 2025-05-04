@@ -1,23 +1,37 @@
-import { CookingPot, Scale } from "lucide-react";
+import {
+  ALargeSmall,
+  ArrowDownWideNarrow,
+  Clock,
+  CookingPot,
+  Scale,
+} from "lucide-react";
 import Logo from "~/app/_images/Logo.svg";
 import Gradient from "~/app/_images/Gradient.png";
 import StyledDisclosure from "./StyledDisclosure";
 import Image from "next/image";
 import Search from "../inputs/Search";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useFiltersContext } from "~/app/_contexts/FiltersContext";
+import {
+  useFiltersContext,
+  type OrderOption,
+} from "~/app/_contexts/FiltersContext";
+import SelectMenu from "../inputs/SelectMenu";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { count, setOrderBy } = useFiltersContext();
+  const { count, orderBy, setOrderBy } = useFiltersContext();
   const [selected, setSelected] = useState<"filters" | "converter" | null>(
     "filters",
   );
 
   const switchOpen = useCallback(
     (value: "filters" | "converter") => {
-      if (selected !== value) {
+      if (selected === null) {
+        setSelected(value);
+      } else if (selected === value) {
+        setSelected(null);
+      } else {
         setSelected(null);
         setTimeout(() => {
           setSelected(value);
@@ -31,6 +45,19 @@ export default function Sidebar() {
     if (pathname != "/") setSelected("converter");
     else setSelected("filters");
   }, [pathname]);
+
+  const orderMenuOptions = [
+    {
+      value: "creation",
+      label: "Data de Criação",
+      icon: <Clock />,
+    },
+    {
+      value: "alphabetical",
+      label: "Alfabeto",
+      icon: <ALargeSmall />,
+    },
+  ];
 
   return (
     <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit">
@@ -48,13 +75,22 @@ export default function Sidebar() {
             icon={<CookingPot />}
             title="Filtrar Receitas"
             content={
-              <div className="flex flex-col gap-3 p-3">
+              <div
+                className="flex flex-col gap-4 p-3"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Search />
-                <div
-                  className="bg-base w-full p-2"
-                  onClick={() => setOrderBy("alphabetical")}
-                >
-                  Muda a ordem!
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-row items-center gap-4">
+                    <ArrowDownWideNarrow />
+                    <span className="font-serif italic">Ordenar por</span>
+                  </div>
+                  <SelectMenu
+                    options={orderMenuOptions}
+                    value={orderMenuOptions.find((e) => e.value === orderBy)!}
+                    setValue={(e) => setOrderBy(e.value as OrderOption)}
+                  />
                 </div>
               </div>
             }
@@ -65,7 +101,7 @@ export default function Sidebar() {
           setOpen={() => switchOpen("converter")}
           icon={<Scale />}
           title="Conversor de Medidas"
-          content={<div>Hello world</div>}
+          content={<div className="p-3">Coming soon</div>}
         />
       </div>
       {pathname === "/" && (

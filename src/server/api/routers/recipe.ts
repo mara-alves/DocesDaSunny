@@ -7,7 +7,7 @@ import {
 } from "~/server/api/trpc";
 
 /* ---------------------------------- Types --------------------------------- */
-export const orderOption = ["creation", "alphabetical", "type"] as const;
+export const orderOption = ["creation", "alphabetical"] as const;
 
 const ingredientInput = z.object({
   ingredient: z.object({
