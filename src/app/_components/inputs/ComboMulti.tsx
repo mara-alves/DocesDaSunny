@@ -61,9 +61,7 @@ export default function ComboMulti({
           setValue(val);
           if (create) {
             await Promise.all(
-              (val as ComboOption[]).map(async (e) =>
-                e.id ? e : await create(e.name),
-              ),
+              val.map(async (e) => (e.id ? e : await create(e.name))),
             ).then((newVal) => {
               setValue(newVal);
             });

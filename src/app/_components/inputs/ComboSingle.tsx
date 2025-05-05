@@ -37,7 +37,7 @@ export default function ComboSingle({
       onChange={async (val) => {
         setValue(val);
         if (val && !val.id && create) {
-          const newVal = await create((val as ComboOption).name);
+          const newVal = await create(val.name);
           setValue(newVal);
         }
       }}

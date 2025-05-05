@@ -24,7 +24,7 @@ export default function SidebarLayout({
           <div className="mt-auto mb-8 text-center font-serif italic">
             Made with <span className="not-italic">❤</span> by{" "}
             <a href="https://github.com/mara-alves" className="underline">
-              Sunny's Sister
+              Sunny&apos;s Sister
             </a>
           </div>
         </div>

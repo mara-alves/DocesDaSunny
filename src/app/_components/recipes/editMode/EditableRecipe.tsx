@@ -57,7 +57,7 @@ export default function EditableRecipe({
 
   const tagsQuery = api.recipe.listTags.useQuery();
   const createTagQuery = api.recipe.createTag.useMutation({
-    onSuccess: async (e) => {
+    onSuccess: async () => {
       await tagsQuery.refetch();
     },
   });
