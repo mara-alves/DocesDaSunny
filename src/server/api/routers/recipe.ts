@@ -33,6 +33,12 @@ const recipeInput = z.object({
   servings: z.number(),
   notes: z.string().nullish(),
   sections: z.array(sectionInput),
+  tags: z.array(
+    z.object({
+      id: z.string().nullish(),
+      name: z.string(),
+    }),
+  ),
 });
 export type FrontendRecipe = z.infer<typeof recipeInput>;
 
@@ -65,12 +71,17 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
+  listTags: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.tag.findMany({ orderBy: { name: "asc" } });
+  }),
+
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       return ctx.db.recipe.findUnique({
         where: { id: input.id },
         include: {
+          tags: true,
           sections: {
             include: {
               ingredients: {
@@ -93,9 +104,9 @@ export const recipeRouter = createTRPCRouter({
   create: protectedProcedure
     .input(recipeInput)
     .mutation(async ({ input, ctx }) => {
-      const { sections, ...recipeBaseData } = input;
+      const { sections, tags, ...recipeBaseData } = input;
       const { id: recipeId } = await ctx.db.recipe.create({
-        data: recipeBaseData,
+        data: recipeBaseData, // TODO: ADD TAGS
       });
       await createSectionsWithIngredients(ctx, recipeId, sections);
       return;
@@ -104,16 +115,22 @@ export const recipeRouter = createTRPCRouter({
   edit: protectedProcedure
     .input(z.object({ id: z.string(), data: recipeInput }))
     .mutation(async ({ input, ctx }) => {
-      const { sections, ...recipeBaseData } = input.data;
+      const { sections, tags, ...recipeBaseData } = input.data;
       const { id: recipeId } = await ctx.db.recipe.update({
         where: {
           id: input.id,
         },
-        data: recipeBaseData,
+        data: recipeBaseData, // TODO: ADD TAGS
       });
       await ctx.db.section.deleteMany({ where: { recipeId: input.id } });
       await createSectionsWithIngredients(ctx, recipeId, sections);
       return;
+    }),
+
+  createTag: protectedProcedure
+    .input(z.object({ name: z.string() }))
+    .mutation(({ input, ctx }) => {
+      return ctx.db.tag.create({ data: { ...input } });
     }),
 });
 

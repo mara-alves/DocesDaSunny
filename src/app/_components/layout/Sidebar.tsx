@@ -105,7 +105,7 @@ export default function Sidebar() {
         />
       </div>
       {pathname === "/" && (
-        <div className="font-serif text-lg italic">
+        <div className="font-serif text-xl italic">
           {count ?? "?"} resultado{count != 1 ? "s" : ""}
         </div>
       )}

@@ -21,7 +21,7 @@ export default function Topbar() {
   }, []);
 
   return (
-    <div className="bg-base text-base-content sticky top-0 z-50 flex h-10 w-full flex-row items-center px-8">
+    <div className="bg-base text-base-content sticky top-0 z-50 flex h-10 w-full shrink-0 flex-row items-center px-8">
       {session?.user ? (
         <div className="ml-auto flex flex-row items-center gap-4 font-serif italic">
           Olá Sunny!

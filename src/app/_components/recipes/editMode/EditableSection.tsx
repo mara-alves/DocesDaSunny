@@ -1,11 +1,12 @@
 import { Plus, Trash, X } from "lucide-react";
-import IngredientSelector from "./IngredientSelector";
 import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
 import type {
   FrontendSection,
   FrontendSectionIngredient,
 } from "~/server/api/routers/recipe";
+import { api } from "~/trpc/react";
+import ComboSingle from "../../inputs/ComboSingle";
 
 export default function EditableSection({
   section,
@@ -19,6 +20,12 @@ export default function EditableSection({
   ) => void;
   deleteSection: () => void;
 }) {
+  const ingredientsQuery = api.ingredient.list.useQuery();
+  const createQuery = api.ingredient.create.useMutation({
+    onSuccess: async () => {
+      await ingredientsQuery.refetch();
+    },
+  });
   const addIngredient = () => {
     const ing = section.ingredients;
     ing.push({ quantity: "", ingredient: { id: null, name: "" } });
@@ -81,9 +88,13 @@ export default function EditableSection({
                 width="w-24"
                 helper="qtd"
               />
-              <IngredientSelector
+              <ComboSingle
                 value={item.ingredient}
-                setValue={(e) => editIngredient(idx, "ingredient", e)}
+                setValue={(e) =>
+                  editIngredient(idx, "ingredient", e ?? { id: null, name: "" })
+                }
+                options={ingredientsQuery.data ?? []}
+                create={async (e) => await createQuery.mutateAsync({ name: e })}
               />
               <X className="icon-btn" onClick={() => deleteIngredient(idx)} />
             </div>

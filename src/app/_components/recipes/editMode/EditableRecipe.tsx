@@ -4,6 +4,7 @@ import {
   Hourglass,
   Plus,
   Save,
+  TagIcon,
   Users,
 } from "lucide-react";
 import { Fragment, useState } from "react";
@@ -21,6 +22,10 @@ import type {
   FrontendRecipe,
   FrontendSection,
 } from "~/server/api/routers/recipe";
+import ComboMulti from "../../inputs/ComboMulti";
+import type { Tag } from "@prisma/client";
+
+type FrontendTag = Omit<Tag, "id"> & { id?: string | null | undefined };
 
 const EmptySection: FrontendSection = {
   name: "",
@@ -36,6 +41,7 @@ const EmptyRecipe: FrontendRecipe = {
   servings: 1,
   notes: "",
   sections: [structuredClone(EmptySection)],
+  tags: [],
 };
 
 export default function EditableRecipe({
@@ -49,8 +55,18 @@ export default function EditableRecipe({
   const createQuery = api.recipe.create.useMutation();
   const editQuery = api.recipe.edit.useMutation();
 
-  const editForm = (key: keyof FrontendRecipe, value: string | number) => {
-    let formattedValue: string | number = value;
+  const tagsQuery = api.recipe.listTags.useQuery();
+  const createTagQuery = api.recipe.createTag.useMutation({
+    onSuccess: async (e) => {
+      await tagsQuery.refetch();
+    },
+  });
+
+  const editForm = (
+    key: keyof FrontendRecipe,
+    value: string | number | FrontendTag[],
+  ) => {
+    let formattedValue: string | number | FrontendTag[] = value;
     if (key === "prepSeconds" || key === "waitSeconds") {
       const [hours, minutes] = (value as string).split(":");
       formattedValue = +hours! * 3600 + +minutes! * 60;
@@ -99,6 +115,8 @@ export default function EditableRecipe({
     }
   };
 
+  console.log(form);
+
   return (
     <>
       <div className="p-4">
@@ -141,6 +159,16 @@ export default function EditableRecipe({
             label="Número de Porções"
             value={form.servings}
             setValue={(e) => editForm("servings", e)}
+          />
+        </div>
+        <div className="flex flex-row items-center gap-2">
+          <TagIcon />
+          <span className="font-semibold">Tags:</span>
+          <ComboMulti
+            value={form.tags}
+            setValue={(e) => editForm("tags", e)}
+            options={tagsQuery.data ?? []}
+            create={async (e) => await createTagQuery.mutateAsync({ name: e })}
           />
         </div>
 
