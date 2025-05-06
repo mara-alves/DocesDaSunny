@@ -70,15 +70,24 @@ export default function RecipeView() {
       </motion.div>
 
       <div className="flex flex-col gap-8 px-6 pt-3 pb-6">
-        <div className="flex flex-row items-center gap-2">
-          <CookingPot className="shrink-0" />
-          {secondsToPrettyString(recipe?.prepSeconds ?? 0)}
-          <Plus className="shrink-0" />
-          <Hourglass className="shrink-0" />
-          {secondsToPrettyString(recipe?.waitSeconds ?? 0)}
-          <div className="bg-base-content mx-3 h-6 w-0.5 rounded-full" />
-          <Users className="shrink-0" />
-          {recipe?.servings} Porções
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-row items-center gap-2">
+            <CookingPot className="shrink-0" />
+            {secondsToPrettyString(recipe?.prepSeconds ?? 0)}
+            <Plus className="shrink-0" />
+            <Hourglass className="shrink-0" />
+            {secondsToPrettyString(recipe?.waitSeconds ?? 0)}
+            <div className="bg-base-content mx-3 h-6 w-0.5 rounded-full" />
+            <Users className="shrink-0" />
+            {recipe?.servings} Porções
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {fullRecipe?.tags.map((tag) => (
+              <div key={tag.id} className="bg-primary px-2 py-1">
+                {tag.name}
+              </div>
+            ))}
+          </div>
         </div>
 
         {fullRecipe?.sections.map((section) => (
@@ -86,7 +95,7 @@ export default function RecipeView() {
         ))}
 
         {recipe?.notes && (
-          <div className="border-primary relative border-2 p-2">
+          <div className="border-primary relative mt-6 border-2 p-2">
             <div className="heading bg-base absolute -top-6 -left-2 px-2 text-2xl">
               Notas
             </div>

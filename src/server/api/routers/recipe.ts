@@ -1,3 +1,4 @@
+import type { Tag } from "@prisma/client";
 import { z } from "zod";
 import {
   type createTRPCContext,
@@ -106,7 +107,12 @@ export const recipeRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { sections, tags, ...recipeBaseData } = input;
       const { id: recipeId } = await ctx.db.recipe.create({
-        data: recipeBaseData, // TODO: ADD TAGS
+        data: {
+          ...recipeBaseData,
+          tags: {
+            connect: tags.filter((e) => !!e.id) as Tag[],
+          },
+        },
       });
       await createSectionsWithIngredients(ctx, recipeId, sections);
       return;
@@ -120,7 +126,12 @@ export const recipeRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        data: recipeBaseData, // TODO: ADD TAGS
+        data: {
+          ...recipeBaseData,
+          tags: {
+            connect: tags.filter((e) => !!e.id) as Tag[],
+          },
+        },
       });
       await ctx.db.section.deleteMany({ where: { recipeId: input.id } });
       await createSectionsWithIngredients(ctx, recipeId, sections);
