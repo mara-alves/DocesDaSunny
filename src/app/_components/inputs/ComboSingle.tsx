@@ -59,7 +59,7 @@ export default function ComboSingle({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 anchor="bottom"
-                className="bg-base text-base-content z-10 !max-h-48 w-(--input-width) overflow-y-auto border-2 shadow-lg"
+                className="bg-base text-base-content z-10 !max-h-48 w-(--input-width) overflow-y-auto border-2 shadow-lg [--anchor-gap:4px]"
               >
                 {filteredOptions.map((e) => (
                   <ComboboxOption
@@ -71,8 +71,8 @@ export default function ComboSingle({
                   </ComboboxOption>
                 ))}
                 {!filteredOptions.find((e) => e.name === search) &&
-                  search.length > 2 &&
-                  (create ? (
+                  search.length >= 1 &&
+                  create && (
                     <ComboboxOption
                       value={{ id: null, name: search }}
                       className="data-focus:bg-primary cursor-pointer px-2 py-1"
@@ -82,11 +82,10 @@ export default function ComboSingle({
                         &quot;{search}&quot;
                       </span>
                     </ComboboxOption>
-                  ) : (
-                    <div className="px-2 py-1 italic">
-                      Oops... Nenhuma opção
-                    </div>
-                  ))}
+                  )}
+                {filteredOptions.length <= 0 && !create && (
+                  <div className="px-2 py-1 italic">Oops... Nenhuma opção</div>
+                )}
               </ComboboxOptions>
             )}
           </AnimatePresence>

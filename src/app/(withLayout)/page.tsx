@@ -13,13 +13,16 @@ import { useDebounce } from "@uidotdev/usehooks";
 
 export default function Home() {
   const { data: session } = useSession();
-  const { search, orderBy, setCount } = useFiltersContext();
+  const { search, orderBy, setCount, tagsFilter, ingredientsFilter } =
+    useFiltersContext();
   const { recipe: prefetched, setRecipe } = useRecipeContext();
 
   const debouncedSearchTerm = useDebounce(search, 200);
   const listRecipes = api.recipe.list.useQuery({
     search: debouncedSearchTerm,
     orderBy,
+    tagIds: tagsFilter.map((e) => e.id),
+    ingredientIds: ingredientsFilter.map((e) => e.id),
   });
   const [deferredResult, setDeferredResult] = useState(listRecipes.data);
 

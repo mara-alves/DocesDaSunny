@@ -115,8 +115,6 @@ export default function EditableRecipe({
     }
   };
 
-  console.log(form);
-
   return (
     <>
       <div className="p-4">

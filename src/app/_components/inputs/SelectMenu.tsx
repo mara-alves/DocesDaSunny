@@ -41,7 +41,7 @@ export default function SelectMenu({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 anchor="bottom"
-                className="bg-base text-base-content z-10 !max-h-48 w-(--button-width) origin-top overflow-y-auto border-2 shadow-lg"
+                className="bg-base text-base-content z-10 !max-h-48 w-(--button-width) origin-top overflow-y-auto border-2 shadow-lg [--anchor-gap:4px]"
               >
                 {options.map((option, idx) => (
                   <ListboxOption

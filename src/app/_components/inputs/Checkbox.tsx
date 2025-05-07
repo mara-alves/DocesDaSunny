@@ -4,7 +4,7 @@ export default function Checkbox({ value }: { value: boolean }) {
   return (
     <div
       className={
-        "border-base-content size-5 border-2 " +
+        "border-base-content size-5 shrink-0 border-2 " +
         (value ? "bg-base-content" : "")
       }
     >

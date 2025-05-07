@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ingredient, Tag } from "@prisma/client";
 import { createContext, useContext, useState } from "react";
 import type { orderOption } from "~/server/api/routers/recipe";
 
@@ -12,6 +13,10 @@ type FiltersContextType = {
   setOrderBy: (value: OrderOption) => void;
   count?: number;
   setCount: (value?: number) => void;
+  tagsFilter: Tag[];
+  setTagsFilter: (value: Tag[]) => void;
+  ingredientsFilter: Ingredient[];
+  setIngredientsFilter: (value: Ingredient[]) => void;
 };
 
 const FiltersContext = createContext<FiltersContextType | null>(null);
@@ -31,10 +36,23 @@ export const FiltersProvider = ({
   const [search, setSearch] = useState<string>("");
   const [orderBy, setOrderBy] = useState<OrderOption>("creation");
   const [count, setCount] = useState<number>();
+  const [tagsFilter, setTagsFilter] = useState<Tag[]>([]);
+  const [ingredientsFilter, setIngredientsFilter] = useState<Ingredient[]>([]);
 
   return (
     <FiltersContext.Provider
-      value={{ search, setSearch, orderBy, setOrderBy, count, setCount }}
+      value={{
+        search,
+        setSearch,
+        orderBy,
+        setOrderBy,
+        count,
+        setCount,
+        tagsFilter,
+        setTagsFilter,
+        ingredientsFilter,
+        setIngredientsFilter,
+      }}
     >
       {children}
     </FiltersContext.Provider>

@@ -4,6 +4,8 @@ import {
   Clock,
   CookingPot,
   Scale,
+  ShoppingBasket,
+  TagIcon,
 } from "lucide-react";
 import Logo from "~/app/_images/Logo.svg";
 import Gradient from "~/app/_images/Gradient.png";
@@ -17,14 +19,28 @@ import {
   type OrderOption,
 } from "~/app/_contexts/FiltersContext";
 import SelectMenu from "../inputs/SelectMenu";
+import { api } from "~/trpc/react";
+import ComboMulti from "../inputs/ComboMulti";
+import type { Ingredient, Tag } from "@prisma/client";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { count, orderBy, setOrderBy } = useFiltersContext();
+  const {
+    count,
+    orderBy,
+    setOrderBy,
+    tagsFilter,
+    setTagsFilter,
+    ingredientsFilter,
+    setIngredientsFilter,
+  } = useFiltersContext();
+
+  const tagsQuery = api.recipe.listTags.useQuery();
+  const ingredientsQuery = api.ingredient.list.useQuery();
+
   const [selected, setSelected] = useState<"filters" | "converter" | null>(
     "filters",
   );
-
   const switchOpen = useCallback(
     (value: "filters" | "converter") => {
       if (selected === null) {
@@ -60,7 +76,10 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit">
+    <aside
+      className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit"
+      style={{ maxWidth: "331px" }}
+    >
       <Logo />
       <Image
         src={Gradient}
@@ -90,6 +109,30 @@ export default function Sidebar() {
                     options={orderMenuOptions}
                     value={orderMenuOptions.find((e) => e.value === orderBy)!}
                     setValue={(e) => setOrderBy(e.value as OrderOption)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-row items-center gap-4">
+                    <TagIcon />
+                    <span className="font-serif italic">Tags</span>
+                  </div>
+                  <ComboMulti
+                    options={tagsQuery.data ?? []}
+                    value={tagsFilter}
+                    setValue={(e) => setTagsFilter(e as Tag[])}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-row items-center gap-4">
+                    <ShoppingBasket />
+                    <span className="font-serif italic">Ingredientes</span>
+                  </div>
+                  <ComboMulti
+                    options={ingredientsQuery.data ?? []}
+                    value={ingredientsFilter}
+                    setValue={(e) => setIngredientsFilter(e as Ingredient[])}
                   />
                 </div>
               </div>

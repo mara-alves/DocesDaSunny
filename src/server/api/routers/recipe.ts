@@ -10,11 +10,13 @@ import {
 /* ---------------------------------- Types --------------------------------- */
 export const orderOption = ["creation", "alphabetical"] as const;
 
+const selectOption = z.object({
+  id: z.string().nullish(),
+  name: z.string(),
+});
+
 const ingredientInput = z.object({
-  ingredient: z.object({
-    id: z.string().nullish(),
-    name: z.string(),
-  }),
+  ingredient: selectOption,
   quantity: z.string(),
 });
 export type FrontendSectionIngredient = z.infer<typeof ingredientInput>;
@@ -34,12 +36,7 @@ const recipeInput = z.object({
   servings: z.number(),
   notes: z.string().nullish(),
   sections: z.array(sectionInput),
-  tags: z.array(
-    z.object({
-      id: z.string().nullish(),
-      name: z.string(),
-    }),
-  ),
+  tags: z.array(selectOption),
 });
 export type FrontendRecipe = z.infer<typeof recipeInput>;
 
@@ -51,6 +48,8 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         search: z.string(),
         orderBy: z.enum(orderOption),
+        tagIds: z.array(z.string()),
+        ingredientIds: z.array(z.string()),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -66,6 +65,32 @@ export const recipeRouter = createTRPCRouter({
           name: {
             contains: input.search,
             mode: "insensitive",
+          },
+          tags: {
+            ...(input.tagIds.length <= 0
+              ? {}
+              : {
+                  some: {
+                    id: {
+                      in: input.tagIds,
+                    },
+                  },
+                }),
+          },
+          sections: {
+            ...(input.ingredientIds.length <= 0
+              ? {}
+              : {
+                  some: {
+                    ingredients: {
+                      some: {
+                        id: {
+                          in: input.ingredientIds,
+                        },
+                      },
+                    },
+                  },
+                }),
           },
         },
         orderBy: orderBy,
