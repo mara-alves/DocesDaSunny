@@ -77,21 +77,17 @@ export const recipeRouter = createTRPCRouter({
                   },
                 }),
           },
-          sections: {
-            ...(input.ingredientIds.length <= 0
-              ? {}
-              : {
+          AND: input.ingredientIds.map((id) => ({
+            sections: {
+              some: {
+                ingredients: {
                   some: {
-                    ingredients: {
-                      some: {
-                        id: {
-                          in: input.ingredientIds,
-                        },
-                      },
-                    },
+                    ingredientId: id,
                   },
-                }),
-          },
+                },
+              },
+            },
+          })),
         },
         orderBy: orderBy,
       });
