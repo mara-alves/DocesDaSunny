@@ -7,24 +7,33 @@ import {
   Hourglass,
   Pencil,
   Plus,
+  Trash,
   Users,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import NoImage from "~/app/_images/NoImage.png";
 import { secondsToPrettyString } from "~/utils/time";
 import { useSession } from "next-auth/react";
-import { redirect, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import SectionView from "~/app/_components/recipes/SectionView";
 import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 
 export default function RecipeView() {
+  const router = useRouter();
   const pathname = usePathname();
   const recipeId = pathname.replace("/", "");
+  const trpcUtils = api.useUtils();
 
   const { recipe: prefetched } = useRecipeContext();
 
   const { data: session } = useSession();
   const { data: fullRecipe } = api.recipe.getById.useQuery({ id: recipeId });
+  const deleteMutation = api.recipe.delete.useMutation({
+    onSuccess: async () => {
+      await trpcUtils.recipe.list.invalidate();
+      router.push("/");
+    },
+  });
 
   const recipe = fullRecipe ?? prefetched;
 
@@ -33,21 +42,29 @@ export default function RecipeView() {
       layoutId={recipe?.name + " card"}
       className="bg-base w-full shadow-lg"
     >
-      <div className="flex flex-row px-6 py-4">
+      <div className="flex flex-row gap-4 px-6 py-4">
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
-          onClick={() => redirect("/")}
+          onClick={() => router.push("/")}
         >
           <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />
           Voltar
         </button>
         {session?.user && (
-          <button
-            className="icon-btn ml-auto"
-            onClick={() => redirect(`/${recipeId}/edit`)}
-          >
-            <Pencil />
-          </button>
+          <>
+            <button
+              className="icon-btn ml-auto"
+              onClick={() => deleteMutation.mutateAsync({ id: recipeId })}
+            >
+              <Trash />
+            </button>
+            <button
+              className="icon-btn"
+              onClick={() => router.push(`/${recipeId}/edit`)}
+            >
+              <Pencil />
+            </button>
+          </>
         )}
       </div>
 

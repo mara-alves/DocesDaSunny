@@ -5,13 +5,14 @@ import { LoaderCircle, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import RecipeCard from "../_components/recipes/RecipeCard";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRecipeContext } from "../_contexts/RecipeContext";
 import { useEffect, useState } from "react";
 import { useFiltersContext } from "../_contexts/FiltersContext";
 import { useDebounce } from "@uidotdev/usehooks";
 
 export default function Home() {
+  const router = useRouter();
   const { data: session } = useSession();
   const { search, orderBy, setCount, tagsFilter, ingredientsFilter } =
     useFiltersContext();
@@ -49,7 +50,7 @@ export default function Home() {
           layoutId={"new card"}
           onClick={() => {
             setRecipe(null);
-            redirect("/new");
+            router.push("/new");
           }}
           className={
             "bg-base flex w-full cursor-pointer flex-col items-center justify-center gap-4 p-4 font-semibold shadow-lg" +

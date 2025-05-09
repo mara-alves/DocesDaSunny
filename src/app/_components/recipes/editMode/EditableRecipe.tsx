@@ -17,7 +17,7 @@ import InputNumber from "../../inputs/InputNumber";
 import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
 import InputTime from "../../inputs/InputTime";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type {
   FrontendRecipe,
   FrontendSection,
@@ -49,11 +49,26 @@ export default function EditableRecipe({
 }: {
   recipe?: (FrontendRecipe & { id: string }) | null;
 }) {
+  const router = useRouter();
+  const trpcUtils = api.useUtils();
+
   const [form, setForm] = useState<FrontendRecipe>(recipe ?? EmptyRecipe);
   const [image, setImage] = useState<File>();
 
-  const createQuery = api.recipe.create.useMutation();
-  const editQuery = api.recipe.edit.useMutation();
+  const createMutation = api.recipe.create.useMutation({
+    onSuccess: async () => {
+      await trpcUtils.recipe.list.invalidate();
+      router.push("/");
+    },
+  });
+  const editMutation = api.recipe.edit.useMutation({
+    onSuccess: async () => {
+      if (changedImage || form.name !== recipe?.name)
+        await trpcUtils.recipe.list.invalidate();
+      await trpcUtils.recipe.getById.invalidate();
+      router.push(`/${recipe!.id}`);
+    },
+  });
 
   const tagsQuery = api.recipe.listTags.useQuery();
   const createTagQuery = api.recipe.createTag.useMutation({
@@ -96,24 +111,29 @@ export default function EditableRecipe({
   };
 
   const saveChanges = async () => {
-    if (image) {
-      const response = await fetch(`/api/image/upload?filename=${image.name}`, {
-        method: "POST",
-        body: image,
-      });
-      const blob = (await response.json()) as PutBlobResult;
-      form.image = blob.url;
-      setForm({ ...form });
+    if (changedImage) {
+      if (image) {
+        const response = await fetch(
+          `/api/image/upload?filename=${image.name}`,
+          {
+            method: "POST",
+            body: image,
+          },
+        );
+        const blob = (await response.json()) as PutBlobResult;
+        form.image = blob.url;
+        setForm({ ...form });
+      } else {
+        form.image = null;
+        setForm({ ...form });
+      }
     }
 
-    if (!recipe) {
-      await createQuery.mutateAsync(form);
-      redirect("/");
-    } else {
-      await editQuery.mutateAsync({ id: recipe.id, data: form });
-      redirect(`/${recipe.id}`);
-    }
+    if (!recipe) createMutation.mutate(form);
+    else editMutation.mutate({ id: recipe.id, data: form });
   };
+
+  const changedImage: boolean = (!image && !!recipe?.image) || !!image;
 
   return (
     <>
@@ -121,8 +141,8 @@ export default function EditableRecipe({
         <button
           className="group flex cursor-pointer flex-row items-center font-serif italic"
           onClick={() => {
-            if (recipe) redirect(`/${recipe.id}`);
-            else redirect("/");
+            if (recipe) router.push(`/${recipe.id}`);
+            else router.push("/");
           }}
         >
           <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />

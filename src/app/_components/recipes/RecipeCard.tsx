@@ -1,10 +1,11 @@
 import type { Recipe } from "@prisma/client";
 import { motion } from "framer-motion";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 import NoImage from "~/app/_images/NoImage.png";
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
+  const router = useRouter();
   const { recipe: active, setRecipe } = useRecipeContext();
 
   return (
@@ -16,7 +17,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
       }
       onClick={() => {
         setRecipe(recipe);
-        redirect(`/${recipe.id}`);
+        router.push(`/${recipe.id}`);
       }}
     >
       <motion.div
