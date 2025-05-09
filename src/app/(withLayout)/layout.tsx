@@ -11,7 +11,7 @@ export default function SidebarLayout({
   return (
     <RecipeProvider>
       <FiltersProvider>
-        <div className="bg-background text-base-content flex h-screen w-screen flex-col overflow-x-hidden overflow-y-scroll">
+        <div className="bg-background text-base-content flex h-screen w-screen flex-col overflow-x-hidden md:overflow-y-scroll">
           <Topbar />
           <div className="mx-auto my-10 w-full px-6 md:px-12 xl:container">
             <div className="flex h-full w-full flex-col gap-12 md:flex-row">
@@ -22,7 +22,7 @@ export default function SidebarLayout({
             </div>
           </div>
           <div className="mt-auto mb-8 text-center font-serif italic">
-            Made with <span className="not-italic">❤</span> by{" "}
+            Made with <span className="not-italic">&#x2764;</span> by{" "}
             <a href="https://github.com/mara-alves" className="underline">
               Sunny&apos;s Sister
             </a>
