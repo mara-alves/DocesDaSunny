@@ -46,6 +46,7 @@ export const recipeRouter = createTRPCRouter({
   list: publicProcedure
     .input(
       z.object({
+        cursor: z.string().nullish(),
         search: z.string(),
         orderBy: z.enum(orderOption),
         tagIds: z.array(z.string()),
@@ -60,7 +61,10 @@ export const recipeRouter = createTRPCRouter({
         orderBy = { name: "asc" as "asc" | "desc" };
       else orderBy = { name: "asc" as "asc" | "desc" };
 
-      return ctx.db.recipe.findMany({
+      const limit = 2;
+      const recipes = await ctx.db.recipe.findMany({
+        take: limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           name: {
             contains: input.search,
@@ -91,6 +95,14 @@ export const recipeRouter = createTRPCRouter({
         },
         orderBy: orderBy,
       });
+
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (recipes.length > limit) {
+        const nextItem = recipes.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return { recipes, nextCursor };
     }),
 
   listTags: publicProcedure.query(async ({ ctx }) => {
