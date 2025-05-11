@@ -136,11 +136,11 @@ export default function EditableRecipe({
         }
       }
 
-      if (!recipe) createMutation.mutateAsync(form);
-      else editMutation.mutateAsync({ id: recipe.id, data: form });
+      if (!recipe) await createMutation.mutateAsync(form);
+      else await editMutation.mutateAsync({ id: recipe.id, data: form });
     };
 
-    toast.promise(fullSave(), {
+    await toast.promise(fullSave(), {
       loading: "A guardar...",
       success: "Receita guardada!",
       error: "Ocorreu um erro :(",

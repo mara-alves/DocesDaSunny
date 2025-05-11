@@ -76,10 +76,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside
-      className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit"
-      style={{ maxWidth: "331px" }}
-    >
+    <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit">
       <Logo />
       <Image
         src={Gradient}
