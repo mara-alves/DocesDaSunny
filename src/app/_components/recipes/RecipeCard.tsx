@@ -11,9 +11,12 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
   return (
     <motion.div
       layoutId={(recipe.name ?? "new") + " card"}
+      initial={{ opacity: active?.id === recipe.id ? 1 : 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: active?.id === recipe.id ? 1 : 0 }}
       className={
-        "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg " +
-        (active?.id == recipe.id ? " z-10" : " z-0")
+        "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg" +
+        (active?.id === recipe.id ? " z-10" : " z-0")
       }
       onClick={() => {
         setRecipe(recipe);
