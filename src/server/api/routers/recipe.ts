@@ -1,4 +1,4 @@
-import type { Tag } from "@prisma/client";
+import type { Prisma, Tag } from "@prisma/client";
 import { z } from "zod";
 import {
   type createTRPCContext,
@@ -54,45 +54,45 @@ export const recipeRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      let orderBy;
-      if (input.orderBy === "creation")
-        orderBy = { createdAt: "asc" as "asc" | "desc" };
-      else if (input.orderBy === "alphabetical")
-        orderBy = { name: "asc" as "asc" | "desc" };
-      else orderBy = { name: "asc" as "asc" | "desc" };
-
-      const limit = 2;
-      const recipes = await ctx.db.recipe.findMany({
-        take: limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        where: {
-          name: {
-            contains: input.search,
-            mode: "insensitive",
-          },
-          tags: {
-            ...(input.tagIds.length <= 0
-              ? {}
-              : {
-                  some: {
-                    id: {
-                      in: input.tagIds,
-                    },
+      const where: Prisma.RecipeWhereInput = {
+        name: {
+          contains: input.search,
+          mode: "insensitive",
+        },
+        tags: {
+          ...(input.tagIds.length <= 0
+            ? {}
+            : {
+                some: {
+                  id: {
+                    in: input.tagIds,
                   },
-                }),
-          },
-          AND: input.ingredientIds.map((id) => ({
-            sections: {
-              some: {
-                ingredients: {
-                  some: {
-                    ingredientId: id,
-                  },
+                },
+              }),
+        },
+        AND: input.ingredientIds.map((id) => ({
+          sections: {
+            some: {
+              ingredients: {
+                some: {
+                  ingredientId: id,
                 },
               },
             },
-          })),
-        },
+          },
+        })),
+      };
+
+      let orderBy;
+      if (input.orderBy === "creation")
+        orderBy = { createdAt: "asc" as "asc" | "desc" };
+      else orderBy = { name: "asc" as "asc" | "desc" };
+
+      const limit = 20;
+      const recipes = await ctx.db.recipe.findMany({
+        take: limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        where,
         orderBy: orderBy,
       });
 
@@ -102,7 +102,9 @@ export const recipeRouter = createTRPCRouter({
         nextCursor = nextItem?.id;
       }
 
-      return { recipes, nextCursor };
+      const totalCount = await ctx.db.recipe.count({ where });
+
+      return { recipes, nextCursor, totalCount };
     }),
 
   listTags: publicProcedure.query(async ({ ctx }) => {

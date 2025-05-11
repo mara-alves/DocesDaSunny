@@ -19,10 +19,8 @@ export default function Home() {
     useFiltersContext();
   const { recipe: prefetched, setRecipe } = useRecipeContext();
 
-  const [page, setPage] = useState(0);
-  const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const debouncedSearchTerm = useDebounce(search, 200);
+  const debouncedSearchTerm = useDebounce(search, 400);
   const listRecipes = api.recipe.list.useInfiniteQuery(
     {
       search: debouncedSearchTerm,
@@ -34,46 +32,38 @@ export default function Home() {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
-  const [deferredResult, setDeferredResult] = useState<
-    RouterOutputs["recipe"]["list"]["recipes"]
-  >([]);
+  const [deferredResult, setDeferredResult] =
+    useState<RouterOutputs["recipe"]["list"]["recipes"]>();
 
   const loadNext = useCallback(async () => {
     if (!listRecipes.isFetchingNextPage && listRecipes.hasNextPage) {
       await listRecipes.fetchNextPage();
-      setPage((prev) => prev + 1);
     }
   }, [listRecipes]);
 
   useEffect(() => {
-    if (observerRef.current) observerRef.current.disconnect();
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          void loadNext();
-        }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) void loadNext();
       },
-      { threshold: 1.0 },
+      { threshold: 0.5 },
     );
-    if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current);
-    }
+    const currentRef = loadMoreRef.current;
+    if (currentRef) observer.observe(currentRef);
+
     return () => {
-      if (observerRef.current) observerRef.current.disconnect();
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, [loadNext]);
+  }, [loadMoreRef, loadNext]);
 
   useEffect(() => {
-    const result = listRecipes.data?.pages[page]?.recipes ?? [];
-    if (result) {
-      setCount(result.length);
-      setDeferredResult((prev) => prev.concat(result));
-    }
-  }, [listRecipes.data, page, setCount]);
+    const res = listRecipes.data;
+    if (!res) return;
+    setCount(res.pages[0]?.totalCount);
+    setDeferredResult(res.pages.flatMap((page) => page.recipes));
+  }, [listRecipes.data, setCount]);
 
-  if (listRecipes.isLoading) return <LoadingIndicator />;
-
-  // TODO: FIX RESULTS COUNT
+  if (!deferredResult) return <LoadingIndicator />;
 
   return (
     <div className="flex w-full flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
