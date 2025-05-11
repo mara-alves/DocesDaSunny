@@ -24,6 +24,7 @@ import type {
 } from "~/server/api/routers/recipe";
 import ComboMulti from "../../inputs/ComboMulti";
 import type { Tag } from "@prisma/client";
+import toast from "react-hot-toast";
 
 type FrontendTag = Omit<Tag, "id"> & { id?: string | null | undefined };
 
@@ -111,26 +112,39 @@ export default function EditableRecipe({
   };
 
   const saveChanges = async () => {
-    if (changedImage) {
-      if (image) {
-        const response = await fetch(
-          `/api/image/upload?filename=${image.name}`,
-          {
-            method: "POST",
-            body: image,
-          },
-        );
-        const blob = (await response.json()) as PutBlobResult;
-        form.image = blob.url;
-        setForm({ ...form });
-      } else {
-        form.image = null;
-        setForm({ ...form });
-      }
+    if (!form.name) {
+      toast.error("É obrigatório dares um nome à receita!");
+      return;
     }
 
-    if (!recipe) createMutation.mutate(form);
-    else editMutation.mutate({ id: recipe.id, data: form });
+    const fullSave = async () => {
+      if (changedImage) {
+        if (image) {
+          const response = await fetch(
+            `/api/image/upload?filename=${image.name}`,
+            {
+              method: "POST",
+              body: image,
+            },
+          );
+          const blob = (await response.json()) as PutBlobResult;
+          form.image = blob.url;
+          setForm({ ...form });
+        } else {
+          form.image = null;
+          setForm({ ...form });
+        }
+      }
+
+      if (!recipe) createMutation.mutateAsync(form);
+      else editMutation.mutateAsync({ id: recipe.id, data: form });
+    };
+
+    toast.promise(fullSave(), {
+      loading: "A guardar...",
+      success: "Receita guardada!",
+      error: "Ocorreu um erro :(",
+    });
   };
 
   const changedImage: boolean = (!image && !!recipe?.image) || !!image;

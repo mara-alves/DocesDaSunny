@@ -4,6 +4,7 @@ import Topbar from "../_components/layout/Topbar";
 import Sidebar from "../_components/layout/Sidebar";
 import { RecipeProvider } from "../_contexts/RecipeContext";
 import { FiltersProvider } from "../_contexts/FiltersContext";
+import { Toaster } from "react-hot-toast";
 
 export default function SidebarLayout({
   children,
@@ -27,6 +28,21 @@ export default function SidebarLayout({
               Sunny&apos;s Sister
             </a>
           </div>
+          <Toaster
+            toastOptions={{
+              style: {
+                background: "var(--color-base)",
+                boxShadow: "var(--shadow-lg)",
+                color: "var(--color-base-content)",
+                borderRadius: "0",
+                border: "2px solid var(--color-base-content)",
+              },
+              iconTheme: {
+                primary: "var(--color-base-content)",
+                secondary: "var(--color-base)",
+              },
+            }}
+          />
         </div>
       </FiltersProvider>
     </RecipeProvider>

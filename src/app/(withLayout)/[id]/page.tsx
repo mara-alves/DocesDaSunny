@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import SectionView from "~/app/_components/recipes/SectionView";
 import { useRecipeContext } from "~/app/_contexts/RecipeContext";
+import toast from "react-hot-toast";
 
 export default function RecipeView() {
   const router = useRouter();
@@ -54,7 +55,13 @@ export default function RecipeView() {
           <>
             <button
               className="icon-btn ml-auto"
-              onClick={() => deleteMutation.mutateAsync({ id: recipeId })}
+              onClick={() =>
+                toast.promise(deleteMutation.mutateAsync({ id: recipeId }), {
+                  loading: "A apagar...",
+                  success: "Receita apagada!",
+                  error: "Ocorreu um erro :(",
+                })
+              }
             >
               <Trash />
             </button>
