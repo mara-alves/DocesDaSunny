@@ -41,7 +41,7 @@ const EmptyRecipe: FrontendRecipe = {
   waitSeconds: 0,
   servings: 1,
   notes: "",
-  sections: [structuredClone(EmptySection)],
+  sections: [EmptySection],
   tags: [],
 };
 
@@ -53,7 +53,9 @@ export default function EditableRecipe({
   const router = useRouter();
   const trpcUtils = api.useUtils();
 
-  const [form, setForm] = useState<FrontendRecipe>(recipe ?? EmptyRecipe);
+  const [form, setForm] = useState<FrontendRecipe>(
+    recipe ?? structuredClone(EmptyRecipe),
+  );
   const [image, setImage] = useState<File>();
 
   const createMutation = api.recipe.create.useMutation({
