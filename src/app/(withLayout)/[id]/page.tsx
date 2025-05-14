@@ -18,6 +18,7 @@ import { useRouter, usePathname } from "next/navigation";
 import SectionView from "~/app/_components/recipes/SectionView";
 import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 import toast from "react-hot-toast";
+import LoadingIndicator from "~/app/_components/layout/LoadingIndicator";
 
 export default function RecipeView() {
   const router = useRouter();
@@ -35,6 +36,8 @@ export default function RecipeView() {
       router.push("/");
     },
   });
+
+  if (!prefetched && !fullRecipe) return <LoadingIndicator />;
 
   const recipe = fullRecipe ?? prefetched;
 
