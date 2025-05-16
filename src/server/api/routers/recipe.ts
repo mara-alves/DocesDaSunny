@@ -162,7 +162,7 @@ export const recipeRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (input.imgUrlToDel) del(input.imgUrlToDel);
+      if (input.imgUrlToDel) await del(input.imgUrlToDel);
       return ctx.db.recipe.delete({ where: { id: input.id } });
     }),
 
@@ -189,7 +189,7 @@ export const recipeRouter = createTRPCRouter({
       });
       await ctx.db.section.deleteMany({ where: { recipeId: input.id } });
       await createSectionsWithIngredients(ctx, recipeId, sections);
-      if (input.imgUrlToDel) del(input.imgUrlToDel);
+      if (input.imgUrlToDel) await del(input.imgUrlToDel);
     }),
 
   createTag: protectedProcedure
