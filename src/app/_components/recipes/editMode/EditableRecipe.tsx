@@ -56,7 +56,8 @@ export default function EditableRecipe({
   const [form, setForm] = useState<FrontendRecipe>(
     recipe ?? structuredClone(EmptyRecipe),
   );
-  const [image, setImage] = useState<File>();
+  // undefined = initial state; null = user pressed trash icon
+  const [image, setImage] = useState<File | undefined | null>();
 
   const createMutation = api.recipe.create.useMutation({
     onSuccess: async () => {
@@ -66,7 +67,7 @@ export default function EditableRecipe({
   });
   const editMutation = api.recipe.edit.useMutation({
     onSuccess: async () => {
-      if (changedImage || form.name !== recipe?.name)
+      if (image !== undefined || form.name !== recipe?.name)
         await trpcUtils.recipe.list.invalidate();
       await trpcUtils.recipe.getById.invalidate();
       router.push(`/${recipe!.id}`);
@@ -120,26 +121,31 @@ export default function EditableRecipe({
     }
 
     const fullSave = async () => {
-      if (changedImage) {
-        if (image) {
-          const response = await fetch(
-            `/api/image/upload?filename=${image.name}`,
-            {
-              method: "POST",
-              body: image,
-            },
-          );
-          const blob = (await response.json()) as PutBlobResult;
-          form.image = blob.url;
-          setForm({ ...form });
-        } else {
-          form.image = null;
-          setForm({ ...form });
-        }
+      const imgUrlToDel = image !== undefined ? recipe?.image : null;
+
+      if (image) {
+        const response = await fetch(
+          `/api/image/upload?filename=${image.name}`,
+          {
+            method: "POST",
+            body: image,
+          },
+        );
+        const blob = (await response.json()) as PutBlobResult;
+        form.image = blob.url;
+        setForm({ ...form });
+      } else if (image === null) {
+        form.image = null;
+        setForm({ ...form });
       }
 
       if (!recipe) await createMutation.mutateAsync(form);
-      else await editMutation.mutateAsync({ id: recipe.id, data: form });
+      else
+        await editMutation.mutateAsync({
+          id: recipe.id,
+          data: form,
+          imgUrlToDel,
+        });
     };
 
     await toast.promise(fullSave(), {
@@ -148,8 +154,6 @@ export default function EditableRecipe({
       error: "Ocorreu um erro :(",
     });
   };
-
-  const changedImage: boolean = (!image && !!recipe?.image) || !!image;
 
   return (
     <>

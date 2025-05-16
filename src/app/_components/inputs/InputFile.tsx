@@ -7,7 +7,7 @@ export default function InputFile({
   setFile,
   initialUrl = null,
 }: {
-  setFile: (file?: File) => void;
+  setFile: (file: File | null) => void;
   initialUrl?: string | null;
 }) {
   const ref = useRef<HTMLInputElement>(null);
@@ -40,7 +40,7 @@ export default function InputFile({
       objectUrl = URL.createObjectURL(file);
       setPreviewImage(objectUrl);
     } else {
-      setFile();
+      setFile(null);
       setPreviewImage(null);
     }
   };

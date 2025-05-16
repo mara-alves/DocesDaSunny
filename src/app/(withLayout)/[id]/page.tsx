@@ -59,11 +59,17 @@ export default function RecipeView() {
             <button
               className="icon-btn ml-auto"
               onClick={() =>
-                toast.promise(deleteMutation.mutateAsync({ id: recipeId }), {
-                  loading: "A apagar...",
-                  success: "Receita apagada!",
-                  error: "Ocorreu um erro :(",
-                })
+                toast.promise(
+                  deleteMutation.mutateAsync({
+                    id: recipeId,
+                    imgUrlToDel: recipe?.image,
+                  }),
+                  {
+                    loading: "A apagar...",
+                    success: "Receita apagada!",
+                    error: "Ocorreu um erro :(",
+                  },
+                )
               }
             >
               <Trash />

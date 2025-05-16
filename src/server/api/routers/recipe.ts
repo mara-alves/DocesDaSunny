@@ -1,4 +1,5 @@
 import type { Prisma, Tag } from "@prisma/client";
+import { del } from "@vercel/blob";
 import { z } from "zod";
 import {
   type createTRPCContext,
@@ -154,13 +155,25 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        imgUrlToDel: z.string().nullish(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
+      if (input.imgUrlToDel) del(input.imgUrlToDel);
       return ctx.db.recipe.delete({ where: { id: input.id } });
     }),
 
   edit: protectedProcedure
-    .input(z.object({ id: z.string(), data: recipeInput }))
+    .input(
+      z.object({
+        id: z.string(),
+        data: recipeInput,
+        imgUrlToDel: z.string().nullish(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
       const { sections, tags, ...recipeBaseData } = input.data;
       const { id: recipeId } = await ctx.db.recipe.update({
@@ -176,7 +189,7 @@ export const recipeRouter = createTRPCRouter({
       });
       await ctx.db.section.deleteMany({ where: { recipeId: input.id } });
       await createSectionsWithIngredients(ctx, recipeId, sections);
-      return;
+      if (input.imgUrlToDel) del(input.imgUrlToDel);
     }),
 
   createTag: protectedProcedure
