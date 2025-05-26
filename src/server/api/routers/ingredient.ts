@@ -6,13 +6,20 @@ import {
 } from "~/server/api/trpc";
 
 export const ingredientRouter = createTRPCRouter({
-  list: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.ingredient.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    });
-  }),
+  list: publicProcedure
+    .input(z.object({ search: z.string() }).nullish())
+    .query(async ({ input, ctx }) => {
+      return ctx.db.ingredient.findMany({
+        where: {
+          ...(input
+            ? { name: { contains: input.search, mode: "insensitive" } }
+            : {}),
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+    }),
 
   create: protectedProcedure
     .input(z.object({ name: z.string().min(3) }))

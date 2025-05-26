@@ -27,6 +27,8 @@ import Link from "next/link";
 export default function Sidebar() {
   const pathname = usePathname();
   const {
+    search,
+    setSearch,
     count,
     orderBy,
     setOrderBy,
@@ -98,7 +100,7 @@ export default function Sidebar() {
                 className="flex flex-col gap-4 p-3"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Search />
+                <Search value={search} setValue={setSearch} />
 
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-row items-center gap-4">

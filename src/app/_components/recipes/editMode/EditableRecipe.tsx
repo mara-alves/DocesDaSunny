@@ -1,5 +1,4 @@
 import {
-  ChevronLeft,
   CookingPot,
   Hourglass,
   Plus,

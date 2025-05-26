@@ -4,20 +4,28 @@ import { Check, Pencil, Trash, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import InputText from "~/app/_components/inputs/InputText";
+import Search from "~/app/_components/inputs/Search";
+import LoadingIndicator from "~/app/_components/layout/LoadingIndicator";
 import TopPageNavigation from "~/app/_components/layout/TopPageNavigation";
 import { api } from "~/trpc/react";
 
 export default function Manager() {
+  const [search, setSearch] = useState<string>("");
   const [toEdit, setToEdit] = useState<string | null>(null);
   const [newName, setNewName] = useState<string>("");
 
-  const ingredientsQuery = api.ingredient.list.useQuery();
+  const ingredientsQuery = api.ingredient.list.useQuery(
+    { search },
+    {
+      placeholderData: (previousData) => previousData,
+    },
+  );
   const deleteMutation = api.ingredient.delete.useMutation({
     onSuccess: () => ingredientsQuery.refetch(),
   });
   const editMutation = api.ingredient.edit.useMutation({
-    onSuccess: () => {
-      ingredientsQuery.refetch();
+    onSuccess: async () => {
+      await ingredientsQuery.refetch();
       setToEdit(null);
     },
   });
@@ -42,7 +50,9 @@ export default function Manager() {
           </div>
         </div>
 
+        <Search value={search} setValue={setSearch} />
         <div className="flex flex-col">
+          {!ingredientsQuery.data && <LoadingIndicator />}
           {ingredientsQuery.data?.map((ingredient) => (
             <div
               key={ingredient.id}
