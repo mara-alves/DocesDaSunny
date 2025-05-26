@@ -23,4 +23,27 @@ export const ingredientRouter = createTRPCRouter({
         },
       });
     }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db.ingredient.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+
+  edit: protectedProcedure
+    .input(z.object({ id: z.string(), name: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db.ingredient.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }),
 });

@@ -19,6 +19,7 @@ import SectionView from "~/app/_components/recipes/SectionView";
 import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 import toast from "react-hot-toast";
 import LoadingIndicator from "~/app/_components/layout/LoadingIndicator";
+import TopPageNavigation from "~/app/_components/layout/TopPageNavigation";
 
 export default function RecipeView() {
   const router = useRouter();
@@ -46,43 +47,40 @@ export default function RecipeView() {
       layoutId={recipe?.name + " card"}
       className="bg-base w-full shadow-lg"
     >
-      <div className="flex flex-row gap-4 px-6 py-4">
-        <button
-          className="group flex cursor-pointer flex-row items-center font-serif italic"
-          onClick={() => router.push("/")}
-        >
-          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />
-          Voltar
-        </button>
-        {session?.user && (
+      <TopPageNavigation
+        extraActions={
           <>
-            <button
-              className="icon-btn ml-auto"
-              onClick={() =>
-                toast.promise(
-                  deleteMutation.mutateAsync({
-                    id: recipeId,
-                    imgUrlToDel: recipe?.image,
-                  }),
-                  {
-                    loading: "A apagar...",
-                    success: "Receita apagada!",
-                    error: "Ocorreu um erro :(",
-                  },
-                )
-              }
-            >
-              <Trash />
-            </button>
-            <button
-              className="icon-btn"
-              onClick={() => router.push(`/${recipeId}/edit`)}
-            >
-              <Pencil />
-            </button>
+            {session?.user && (
+              <>
+                <button
+                  className="icon-btn ml-auto"
+                  onClick={() =>
+                    toast.promise(
+                      deleteMutation.mutateAsync({
+                        id: recipeId,
+                        imgUrlToDel: recipe?.image,
+                      }),
+                      {
+                        loading: "A apagar...",
+                        success: "Receita apagada!",
+                        error: "Ocorreu um erro :(",
+                      },
+                    )
+                  }
+                >
+                  <Trash />
+                </button>
+                <button
+                  className="icon-btn"
+                  onClick={() => router.push(`/${recipeId}/edit`)}
+                >
+                  <Pencil />
+                </button>
+              </>
+            )}
           </>
-        )}
-      </div>
+        }
+      />
 
       <motion.div
         layoutId={recipe?.name + " image container"}

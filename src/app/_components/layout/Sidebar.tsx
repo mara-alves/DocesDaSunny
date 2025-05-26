@@ -22,6 +22,7 @@ import SelectMenu from "../inputs/SelectMenu";
 import { api } from "~/trpc/react";
 import ComboMulti from "../inputs/ComboMulti";
 import type { Ingredient, Tag } from "@prisma/client";
+import Link from "next/link";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -77,7 +78,9 @@ export default function Sidebar() {
 
   return (
     <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit">
-      <Logo />
+      <Link href={"/"}>
+        <Logo />
+      </Link>
       <Image
         src={Gradient}
         alt={"Gradient"}
