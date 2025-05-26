@@ -21,3 +21,6 @@ npx prisma migrate dev
 ```
 
 Whenever making changes to the prisma.schema, also run `npx prisma migrate dev` to generate the needed migration(s).
+
+### Authentication
+This app uses [Auth.js](https://authjs.dev/) for authentication, with the Google Provider. Regular users can only search, filter, and view recipes. Then there's a whitelist of users who can login using their Google accounts - those also have permissions to edit and delete recipes.
