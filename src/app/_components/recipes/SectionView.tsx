@@ -28,7 +28,9 @@ export default function SectionView({
             {section.ingredients.map((item, idx) => (
               <div key={idx}>
                 <div className="bg-base-content mr-3 inline-block size-2 shrink-0 rounded-full" />
-                {item.quantity} {item.ingredient.name}
+                {item.quantity}
+                {item.quantity ? " " : ""}
+                {item.ingredient.name}
               </div>
             ))}
           </div>

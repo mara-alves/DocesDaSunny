@@ -1,5 +1,4 @@
 import {
-  ChevronLeft,
   CookingPot,
   Hourglass,
   Plus,
@@ -25,6 +24,7 @@ import type {
 import ComboMulti from "../../inputs/ComboMulti";
 import type { Tag } from "@prisma/client";
 import toast from "react-hot-toast";
+import TopPageNavigation from "../../layout/TopPageNavigation";
 
 type FrontendTag = Omit<Tag, "id"> & { id?: string | null | undefined };
 
@@ -157,18 +157,7 @@ export default function EditableRecipe({
 
   return (
     <>
-      <div className="p-4">
-        <button
-          className="group flex cursor-pointer flex-row items-center font-serif italic"
-          onClick={() => {
-            if (recipe) router.push(`/${recipe.id}`);
-            else router.push("/");
-          }}
-        >
-          <ChevronLeft className="mr-4 transition-all group-hover:mr-2" />
-          Voltar
-        </button>
-      </div>
+      <TopPageNavigation />
 
       <InputFile initialUrl={recipe?.image} setFile={setImage} />
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -25,6 +25,9 @@ export default function Topbar() {
       {session?.user ? (
         <div className="ml-auto flex flex-row items-center gap-4 font-serif italic">
           Olá Sunny!
+          <Link href={"/manager"}>
+            <Settings className="icon-btn" />
+          </Link>
           <LogOut className="icon-btn" onClick={() => signOut()} />
         </div>
       ) : (
