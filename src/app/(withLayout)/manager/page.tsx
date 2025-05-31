@@ -40,11 +40,9 @@ export default function Manager() {
             Atenção!
           </div>
           <div className="bg-primary/50 px-4 py-2">
-            Apagar um ingrediente vai fazer com que ele desapareça de todas as
-            receitas, pelo que{" "}
-            <span className="font-semibold">
-              se não tiveres cuidado certas receitas poderão ficar incompletas!
-            </span>
+            Se o botão <Trash className="inline-block" /> não ter permitir
+            apagar, significa que o ingrediente está a ser usado em alguma
+            receita.
             <br></br>Renomear um ingrediente atualiza-o em todas as receitas em
             que aparece.
           </div>
@@ -56,7 +54,7 @@ export default function Manager() {
           {ingredientsQuery.data?.map((ingredient) => (
             <div
               key={ingredient.id}
-              className="border-primary flex flex-row items-center gap-2 border-b-2"
+              className="border-primary flex flex-row items-center gap-2 not-last:border-b-2"
             >
               {toEdit === ingredient.id ? (
                 <>
@@ -92,7 +90,8 @@ export default function Manager() {
                       setToEdit(ingredient.id);
                     }}
                   />
-                  <Trash
+                  <button
+                    disabled={ingredient._count.recipeIngredients > 0}
                     className="icon-btn"
                     onClick={() =>
                       toast.promise(
@@ -104,7 +103,9 @@ export default function Manager() {
                         },
                       )
                     }
-                  />
+                  >
+                    <Trash />
+                  </button>
                 </>
               )}
             </div>

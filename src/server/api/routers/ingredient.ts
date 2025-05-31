@@ -15,6 +15,13 @@ export const ingredientRouter = createTRPCRouter({
             ? { name: { contains: input.search, mode: "insensitive" } }
             : {}),
         },
+        include: {
+          _count: {
+            select: {
+              recipeIngredients: true,
+            },
+          },
+        },
         orderBy: {
           name: "asc",
         },
