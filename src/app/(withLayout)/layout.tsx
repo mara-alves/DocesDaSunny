@@ -14,7 +14,7 @@ export default function SidebarLayout({
       <FiltersProvider>
         <div className="bg-background text-base-content flex h-screen w-screen flex-col overflow-x-hidden md:overflow-y-scroll">
           <Topbar />
-          <div className="mx-auto my-10 w-full px-6 md:px-12 xl:container">
+          <div className="mx-auto my-14 w-full px-6 md:px-12 xl:container">
             <div className="flex h-full w-full flex-col gap-12 md:flex-row">
               <Sidebar />
               <div className="relative z-10 flex w-full flex-col">
