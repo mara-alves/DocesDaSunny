@@ -44,7 +44,7 @@ export default function RecipeView() {
   return (
     <motion.div
       layoutId={recipe?.name + " card"}
-      className="bg-base w-full shadow-lg"
+      className="bg-base relative w-full shadow-lg"
     >
       <TopPageNavigation
         extraActions={
@@ -83,7 +83,7 @@ export default function RecipeView() {
 
       <motion.div
         layoutId={recipe?.name + " image container"}
-        className="relative flex h-64 w-full items-center overflow-hidden"
+        className="flex h-64 w-full items-center overflow-hidden"
       >
         <motion.img
           layoutId={recipe?.name + " image"}
@@ -91,11 +91,16 @@ export default function RecipeView() {
           alt={recipe?.name + " photo"}
           className="w-full"
         />
+      </motion.div>
+      <motion.div
+        layoutId={recipe?.name + " gradient"}
+        className="to-base absolute top-14 flex h-64 w-full bg-linear-to-b from-0%"
+      >
         <motion.div
-          layoutId={recipe?.name + " gradient"}
-          className="to-base absolute top-0 flex h-full w-full bg-linear-to-b from-0%"
+          layoutId={recipe?.name + " name"}
+          className="heading mx-6 mt-auto text-4xl"
         >
-          <div className="heading mx-6 mt-auto text-4xl">{recipe?.name}</div>
+          {recipe?.name}
         </motion.div>
       </motion.div>
 

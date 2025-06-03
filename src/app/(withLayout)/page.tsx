@@ -75,7 +75,7 @@ export default function Home() {
             router.push("/new");
           }}
           className={
-            "bg-base flex w-full cursor-pointer flex-col items-center justify-center gap-4 p-4 font-semibold shadow-lg" +
+            "bg-base flex w-full cursor-pointer flex-col items-center justify-center gap-4 p-4 font-semibold shadow-sm transition-shadow hover:shadow-lg" +
             (!prefetched ? " z-10" : " z-0")
           }
         >
