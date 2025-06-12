@@ -53,6 +53,7 @@ export default function EditableRecipe({
   const router = useRouter();
   const trpcUtils = api.useUtils();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState<FrontendRecipe>(
     recipe ?? structuredClone(EmptyRecipe),
   );
@@ -119,6 +120,7 @@ export default function EditableRecipe({
       toast.error("É obrigatório dares um nome à receita!");
       return;
     }
+    setIsLoading(true);
 
     const fullSave = async () => {
       const imgUrlToDel = image !== undefined ? recipe?.image : null;
@@ -153,6 +155,7 @@ export default function EditableRecipe({
       success: "Receita guardada!",
       error: "Ocorreu um erro :(",
     });
+    setIsLoading(false);
   };
 
   return (
@@ -224,7 +227,11 @@ export default function EditableRecipe({
           setValue={(e) => editForm("notes", e)}
         />
 
-        <button className="btn mt-4 ml-auto text-xl" onClick={saveChanges}>
+        <button
+          className="btn mt-4 ml-auto text-xl"
+          onClick={saveChanges}
+          disabled={isLoading}
+        >
           <Save />
           {recipe ? "Guardar Alterações" : "Criar Receita"}
         </button>
