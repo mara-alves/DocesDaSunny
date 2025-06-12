@@ -4,7 +4,7 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import CustomChevron from "~/app/_images/CustomChevron.svg";
 import { type ReactNode } from "react";
 
 export default function StyledDisclosure({
@@ -34,7 +34,7 @@ export default function StyledDisclosure({
           <DisclosureButton className="flex w-full flex-row items-center gap-4 px-4 py-2 font-semibold">
             {icon}
             {title}
-            <ChevronDown
+            <CustomChevron
               className={"ml-auto transition " + (open ? "rotate-180" : "")}
             />
           </DisclosureButton>

@@ -157,7 +157,7 @@ export default function EditableRecipe({
 
   return (
     <>
-      <TopPageNavigation />
+      <TopPageNavigation prevPage={recipe ? `/${recipe.id}` : undefined} />
 
       <InputFile initialUrl={recipe?.image} setFile={setImage} />
 

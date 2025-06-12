@@ -15,7 +15,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: active?.id === recipe.id ? 1 : 0 }}
       className={
-        "bg-base flex h-fit cursor-pointer flex-col gap-4 p-4 shadow-lg" +
+        "bg-base flex h-fit cursor-pointer flex-col gap-3 p-4 shadow-sm transition-shadow hover:shadow-lg" +
         (active?.id === recipe.id ? " z-10" : " z-0")
       }
       onClick={() => {
@@ -33,13 +33,18 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
           alt={recipe.name + " photo"}
           className="min-h-full min-w-full object-cover"
         />
-        <motion.div
-          layoutId={recipe.name + " gradient"}
-          transition={{ duration: 0.5 }}
-          className="to-base absolute top-full flex h-full w-full bg-linear-to-b from-0%"
-        ></motion.div>
       </motion.div>
-      <div className="line-clamp-2 h-12 font-semibold">{recipe.name}</div>
+      <motion.div
+        layoutId={recipe.name + " gradient"}
+        className="to-base w-full bg-linear-to-b from-0%"
+      >
+        <motion.div
+          layoutId={recipe?.name + " name"}
+          className="heading line-clamp-2 h-12"
+        >
+          {recipe.name}
+        </motion.div>
+      </motion.div>
     </motion.div>
   );
 }

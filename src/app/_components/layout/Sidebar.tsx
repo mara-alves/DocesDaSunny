@@ -23,6 +23,7 @@ import { api } from "~/trpc/react";
 import ComboMulti from "../inputs/ComboMulti";
 import type { Ingredient, Tag } from "@prisma/client";
 import Link from "next/link";
+import UnitConverter from "./UnitConverter";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -146,7 +147,14 @@ export default function Sidebar() {
           setOpen={() => switchOpen("converter")}
           icon={<Scale />}
           title="Conversor de Medidas"
-          content={<div className="p-3">Coming soon</div>}
+          content={
+            <div
+              className="flex w-full flex-col gap-4 p-3"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <UnitConverter />
+            </div>
+          }
         />
       </div>
       {pathname === "/" && (

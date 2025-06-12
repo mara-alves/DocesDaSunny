@@ -42,13 +42,14 @@ export default function ComboSingle({
         }
       }}
       onClose={() => setSearch("")}
+      className={"w-full"}
     >
       {({ open }) => (
         <>
           <ComboboxInput
             onChange={(e) => setSearch(e.target.value)}
             displayValue={(e) => (e as ComboOption)?.name}
-            className="border-base-content w-full border-2 px-2 py-1"
+            className="border-base-content bg-base w-full border-2 px-2 py-1"
           />
           <AnimatePresence>
             {open && (

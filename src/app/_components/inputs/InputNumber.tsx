@@ -7,20 +7,20 @@ export default function InputNumber({
   setValue,
 }: {
   icon?: ReactNode;
-  label: string;
+  label?: string;
   value: number;
   setValue: (value: number) => void;
 }) {
   return (
     <div className="flex w-full flex-row items-center gap-2 md:w-fit">
       {icon}
-      <div className="font-semibold">{label}:</div>
+      {label && <div className="font-semibold">{label}:</div>}
       <input
         type="number"
         size={2}
         value={value}
         onChange={(e) => setValue(+e.target.value)}
-        className="border-base-content ml-auto border-2 px-2 py-1"
+        className="border-base-content bg-base ml-auto border-2 px-2 py-1"
       />
     </div>
   );
