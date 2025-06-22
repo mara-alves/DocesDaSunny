@@ -115,6 +115,17 @@ export default function EditableRecipe({
     setForm({ ...form });
   };
 
+  const swapSections = (curIdx: number, newIdx: number) => {
+    const sections = [...form.sections];
+    if (sections[curIdx] && sections[newIdx]) {
+      [sections[curIdx], sections[newIdx]] = [
+        sections[newIdx],
+        sections[curIdx],
+      ];
+      setForm({ ...form, sections });
+    }
+  };
+
   const saveChanges = async () => {
     if (!form.name) {
       toast.error("É obrigatório dares um nome à receita!");
@@ -210,6 +221,12 @@ export default function EditableRecipe({
               section={section}
               editSection={(key, value) => editSection(idx, key, value)}
               deleteSection={() => deleteSection(idx)}
+              moveSectionUp={idx <= 0 ? null : () => swapSections(idx, idx - 1)}
+              moveSectionDown={
+                idx >= form.sections.length - 1
+                  ? null
+                  : () => swapSections(idx, idx + 1)
+              }
             />
             <div className="bg-primary h-0.5 w-full" />
           </Fragment>

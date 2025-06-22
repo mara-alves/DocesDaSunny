@@ -1,4 +1,4 @@
-import { Plus, Trash, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash, X } from "lucide-react";
 import InputText from "../../inputs/InputText";
 import InputTextarea from "../../inputs/InputTextarea";
 import type {
@@ -12,6 +12,8 @@ export default function EditableSection({
   section,
   editSection,
   deleteSection,
+  moveSectionUp,
+  moveSectionDown,
 }: {
   section: FrontendSection;
   editSection: (
@@ -19,6 +21,8 @@ export default function EditableSection({
     value: string | string[] | FrontendSectionIngredient[],
   ) => void;
   deleteSection: () => void;
+  moveSectionUp: null | (() => void);
+  moveSectionDown: null | (() => void);
 }) {
   const ingredientsQuery = api.ingredient.list.useQuery();
   const createQuery = api.ingredient.create.useMutation({
@@ -64,7 +68,7 @@ export default function EditableSection({
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="flex w-full flex-row">
+      <div className="relative w-full">
         <InputText
           label="Nome da Secção"
           helper="Opcional, p.ex Base, Ganache, Praliné..."
@@ -72,7 +76,15 @@ export default function EditableSection({
           setValue={(e) => editSection("name", e)}
           style="border-2 border-dashed border-primary-darker px-2 py-1 heading text-xl"
         />
-        <Trash className="icon-btn w-max" onClick={deleteSection} />
+        <div className="absolute -top-1 right-0 flex flex-row gap-2">
+          {moveSectionUp && (
+            <ChevronUp className="icon-btn" onClick={moveSectionUp} />
+          )}
+          {moveSectionDown && (
+            <ChevronDown className="icon-btn" onClick={moveSectionDown} />
+          )}
+          <Trash className="icon-btn" onClick={deleteSection} />
+        </div>
       </div>
 
       <div className="divide-primary flex grid-cols-[0.5fr_1fr] flex-col md:grid md:divide-x-2">
