@@ -95,6 +95,9 @@ export const recipeRouter = createTRPCRouter({
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where,
         orderBy: orderBy,
+        include: {
+          tags: true,
+        },
       });
 
       let nextCursor: typeof input.cursor | undefined = undefined;
@@ -183,6 +186,7 @@ export const recipeRouter = createTRPCRouter({
         data: {
           ...recipeBaseData,
           tags: {
+            set: [],
             connect: tags.filter((e) => !!e.id) as Tag[],
           },
         },

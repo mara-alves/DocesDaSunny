@@ -3,7 +3,7 @@ export default function InputText({
   helper,
   value,
   setValue,
-  style = "border-base-content border-2 px-2 py-1",
+  style = "border-base-content bg-base border-2 px-2 py-1",
   width = "w-full",
 }: {
   label?: string;
