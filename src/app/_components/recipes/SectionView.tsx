@@ -1,17 +1,33 @@
-import type { Section } from "@prisma/client";
+import { useMemo } from "react";
+import type { RouterOutputs } from "~/trpc/react";
 
 export default function SectionView({
   section,
+  servingsOriginal,
+  servingsSelected,
 }: {
-  section: Section & {
-    ingredients: {
-      quantity: string;
-      ingredient: {
-        name: string;
-      };
-    }[];
-  };
+  section: NonNullable<RouterOutputs["recipe"]["getById"]>["sections"][number];
+  servingsOriginal: number;
+  servingsSelected: number;
 }) {
+  const calculatedIngredients = useMemo(() => {
+    return section.ingredients.map((ing) => {
+      const numberParts = (ing.quantity.match(/\d+/g) ?? []) as number[];
+      let newQuantityStr = ing.quantity;
+
+      for (const numPart of numberParts) {
+        let calculated = (numPart * servingsSelected) / servingsOriginal;
+        calculated = Math.round(calculated * 100) / 100;
+
+        newQuantityStr = newQuantityStr.replace(
+          numPart.toString(),
+          calculated.toString(),
+        );
+      }
+      return { ...ing, quantity: newQuantityStr };
+    });
+  }, [section.ingredients, servingsOriginal, servingsSelected]);
+
   return (
     <div className="flex flex-col gap-3">
       {section.name && (
@@ -22,10 +38,10 @@ export default function SectionView({
       )}
 
       <div className="flex grid-cols-[0.5fr_1fr] flex-col gap-4 md:grid md:gap-8">
-        {section.ingredients.length > 0 ? (
+        {calculatedIngredients.length > 0 ? (
           <div className="border-base-content flex h-fit flex-col gap-2 border-2 border-dashed px-4 py-3">
             <div className="heading text-xl">Ingredientes</div>
-            {section.ingredients.map((item, idx) => (
+            {calculatedIngredients.map((item, idx) => (
               <div key={idx}>
                 <div className="bg-base-content mr-3 inline-block size-2 shrink-0 rounded-full" />
                 {item.quantity.trim()}

@@ -19,6 +19,8 @@ import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 import toast from "react-hot-toast";
 import LoadingIndicator from "~/app/_components/layout/LoadingIndicator";
 import TopPageNavigation from "~/app/_components/layout/TopPageNavigation";
+import { useEffect, useState } from "react";
+import InputNumber from "~/app/_components/inputs/InputNumber";
 
 export default function RecipeView() {
   const router = useRouter();
@@ -36,6 +38,11 @@ export default function RecipeView() {
       router.push("/");
     },
   });
+
+  const [servings, setServings] = useState<number>(0);
+  useEffect(() => {
+    if (fullRecipe) setServings(fullRecipe.servings);
+  }, [fullRecipe]);
 
   if (!prefetched && !fullRecipe) return <LoadingIndicator />;
 
@@ -114,7 +121,12 @@ export default function RecipeView() {
             {secondsToPrettyString(recipe?.waitSeconds ?? 0)}
             <div className="bg-base-content mx-3 h-6 w-0.5 rounded-full" />
             <Users className="shrink-0" />
-            {recipe?.servings} Porções
+            <InputNumber
+              value={servings}
+              setValue={setServings}
+              style="border-b w-10 outline-none"
+            />
+            Porções
           </div>
           <div className="flex flex-wrap gap-2">
             {fullRecipe?.tags.map((tag) => (
@@ -126,7 +138,12 @@ export default function RecipeView() {
         </div>
 
         {fullRecipe?.sections.map((section) => (
-          <SectionView key={section.id} section={section} />
+          <SectionView
+            key={section.id}
+            section={section}
+            servingsOriginal={fullRecipe.servings}
+            servingsSelected={servings}
+          />
         ))}
 
         {recipe?.notes && (
