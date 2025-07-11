@@ -68,7 +68,11 @@ export default function EditableRecipe({
   });
   const editMutation = api.recipe.edit.useMutation({
     onSuccess: async () => {
-      if (image !== undefined || form.name !== recipe?.name)
+      if (
+        image !== undefined ||
+        form.name !== recipe?.name ||
+        form.tags !== recipe.tags
+      )
         await trpcUtils.recipe.list.invalidate();
       await trpcUtils.recipe.getById.invalidate();
       router.push(`/${recipe!.id}`);

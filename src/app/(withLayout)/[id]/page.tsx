@@ -118,7 +118,7 @@ export default function RecipeView() {
           </div>
           <div className="flex flex-wrap gap-2">
             {fullRecipe?.tags.map((tag) => (
-              <div key={tag.id} className="bg-primary px-2 py-1">
+              <div key={tag.id} className="bg-primary px-2 py-1 shadow-sm">
                 {tag.name}
               </div>
             ))}
