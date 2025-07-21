@@ -21,7 +21,7 @@
 }
 
 .icon-btn {
-  @apply text-primary-darker hover:text-base-content disabled:text-primary shrink-0 transition not-disabled:cursor-pointer;
+  @apply text-primary-darker hover:text-base-content disabled:text-primary focus-visible:text-base-content focus-visible:bg-background shrink-0 rounded-full transition outline-none not-disabled:cursor-pointer;
 }
 
 .heading {

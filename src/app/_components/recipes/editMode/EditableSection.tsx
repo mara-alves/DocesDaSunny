@@ -7,6 +7,7 @@ import type {
 } from "~/server/api/routers/recipe";
 import { api } from "~/trpc/react";
 import ComboSingle from "../../inputs/ComboSingle";
+import { useEffect, useRef } from "react";
 
 export default function EditableSection({
   section,
@@ -30,6 +31,12 @@ export default function EditableSection({
       await ingredientsQuery.refetch();
     },
   });
+
+  const lastIngredientRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    lastIngredientRef.current?.focus();
+  }, [section.ingredients.length]);
+
   const addIngredient = () => {
     const ing = section.ingredients;
     ing.push({ quantity: "", ingredient: { id: null, name: "" } });
@@ -69,13 +76,6 @@ export default function EditableSection({
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="relative w-full">
-        <InputText
-          label="Nome da Secção"
-          helper="Opcional, p.ex Base, Ganache, Praliné..."
-          value={section.name}
-          setValue={(e) => editSection("name", e)}
-          style="border-2 border-dashed border-primary-darker px-2 py-1 heading text-xl"
-        />
         <div className="absolute -top-1 right-0 flex flex-row gap-2">
           {moveSectionUp && (
             <ChevronUp className="icon-btn" onClick={moveSectionUp} />
@@ -83,8 +83,17 @@ export default function EditableSection({
           {moveSectionDown && (
             <ChevronDown className="icon-btn" onClick={moveSectionDown} />
           )}
-          <Trash className="icon-btn" onClick={deleteSection} />
+          <button className="icon-btn" onClick={deleteSection}>
+            <Trash />
+          </button>
         </div>
+        <InputText
+          label="Nome da Secção"
+          helper="Opcional, p.ex Base, Ganache, Praliné..."
+          value={section.name}
+          setValue={(e) => editSection("name", e)}
+          style="border-2 border-dashed border-primary-darker px-2 py-1 heading text-xl"
+        />
       </div>
 
       <div className="divide-primary flex grid-cols-[0.5fr_1fr] flex-col md:grid md:divide-x-2">
@@ -99,6 +108,11 @@ export default function EditableSection({
                 style="border-base-content border-2 px-2 py-1"
                 width="w-24"
                 helper="qtd"
+                ref={
+                  idx === section.ingredients.length - 1
+                    ? lastIngredientRef
+                    : null
+                }
               />
               <ComboSingle
                 value={item.ingredient}
@@ -108,7 +122,12 @@ export default function EditableSection({
                 options={ingredientsQuery.data ?? []}
                 create={async (e) => await createQuery.mutateAsync({ name: e })}
               />
-              <X className="icon-btn" onClick={() => deleteIngredient(idx)} />
+              <button
+                className="icon-btn"
+                onClick={() => deleteIngredient(idx)}
+              >
+                <X />
+              </button>
             </div>
           ))}
           <button
@@ -129,7 +148,12 @@ export default function EditableSection({
                 setValue={(e) => editStep(idx, e)}
                 style="transition focus-visible:outline-none focus-visible:border-base-content border-primary border-b-2 p-0.5 "
               />
-              <X className="icon-btn" onClick={() => deleteStep(idx)} />
+              <button
+                className="icon-btn my-auto"
+                onClick={() => deleteStep(idx)}
+              >
+                <X />
+              </button>
             </div>
           ))}
           <button
