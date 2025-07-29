@@ -83,13 +83,15 @@ export default function Manager() {
               ) : (
                 <>
                   <div className="py-1.5">{ingredient.name}</div>
-                  <Pencil
+                  <button
                     className="icon-btn ml-auto"
                     onClick={() => {
                       setNewName(ingredient.name);
                       setToEdit(ingredient.id);
                     }}
-                  />
+                  >
+                    <Pencil />
+                  </button>
                   <button
                     disabled={ingredient._count.recipeIngredients > 0}
                     className="icon-btn"
