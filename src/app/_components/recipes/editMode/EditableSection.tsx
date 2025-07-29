@@ -5,9 +5,8 @@ import type {
   FrontendSection,
   FrontendSectionIngredient,
 } from "~/server/api/routers/recipe";
-import { api } from "~/trpc/react";
-import ComboSingle from "../../inputs/ComboSingle";
 import { useEffect, useRef } from "react";
+import EditableIngredient from "./EditableIngredient";
 
 export default function EditableSection({
   section,
@@ -25,13 +24,6 @@ export default function EditableSection({
   moveSectionUp: null | (() => void);
   moveSectionDown: null | (() => void);
 }) {
-  const ingredientsQuery = api.ingredient.list.useQuery();
-  const createQuery = api.ingredient.create.useMutation({
-    onSuccess: async () => {
-      await ingredientsQuery.refetch();
-    },
-  });
-
   const lastIngredientRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     lastIngredientRef.current?.focus();
@@ -100,35 +92,17 @@ export default function EditableSection({
         <div className="flex w-full flex-col gap-4 md:pr-4">
           <div className="heading text-xl">Ingredientes</div>
           {section.ingredients.map((item, idx) => (
-            <div key={idx} className="flex w-full flex-row items-center gap-2">
-              <div className="bg-base-content size-2 shrink-0 rounded-full" />
-              <InputText
-                value={item.quantity}
-                setValue={(e) => editIngredient(idx, "quantity", e)}
-                style="border-base-content border-2 px-2 py-1"
-                width="w-24"
-                helper="qtd"
-                ref={
-                  idx === section.ingredients.length - 1
-                    ? lastIngredientRef
-                    : null
-                }
-              />
-              <ComboSingle
-                value={item.ingredient}
-                setValue={(e) =>
-                  editIngredient(idx, "ingredient", e ?? { id: null, name: "" })
-                }
-                options={ingredientsQuery.data ?? []}
-                create={async (e) => await createQuery.mutateAsync({ name: e })}
-              />
-              <button
-                className="icon-btn"
-                onClick={() => deleteIngredient(idx)}
-              >
-                <X />
-              </button>
-            </div>
+            <EditableIngredient
+              key={idx}
+              ingredient={item}
+              editIngredient={(key, value) => editIngredient(idx, key, value)}
+              deleteIngredient={() => deleteIngredient(idx)}
+              ref={
+                idx === section.ingredients.length - 1
+                  ? lastIngredientRef
+                  : null
+              }
+            />
           ))}
           <button
             className="icon-btn flex justify-center"

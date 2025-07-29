@@ -5,25 +5,36 @@ import InputNumber from "../inputs/InputNumber";
 export default function UnitConverter() {
   const [quantity, setQuantity] = useState<number>(1);
   const [selected, setSelected] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
+
+  const options = Object.keys(record).map((e) => ({ name: e }));
+  const filteredOptions =
+    search === ""
+      ? options
+      : (options.filter((e) => {
+          return e.name.toLowerCase().includes(search.toLowerCase());
+        }) ?? []);
 
   return (
     <>
       <div className="flex w-full flex-row items-center gap-2">
         <InputNumber value={quantity} setValue={setQuantity} />
-        {options[selected]?.[2] ?? "Cup"}
+        {record[selected]?.[2] ?? "Cup"}
         {quantity === 1 ? " " : "s "}
         de
       </div>
       <ComboSingle
-        options={Object.keys(options).map((e) => ({ name: e }))}
+        search={search}
+        setSearch={setSearch}
+        options={filteredOptions}
         value={{ name: selected }}
         setValue={(e) => setSelected(e?.name ?? "")}
       />
       <div className="bg-base-content h-0.5 w-full" />
       <span className="ml-auto text-xl font-semibold">
         {"= " +
-          (options[selected]
-            ? (options[selected][1] * quantity) / options[selected][0]
+          (record[selected]
+            ? (record[selected][1] * quantity) / record[selected][0]
             : 0) +
           " Gramas"}
       </span>
@@ -32,7 +43,7 @@ export default function UnitConverter() {
 }
 
 // <Name, [Original Amount, Equivalent in Grams, Original Unit (default is Cups)]>
-const options: Record<string, [number, number, string?]> = {
+const record: Record<string, [number, number, string?]> = {
   "Farinha '00' para Pizza": [1, 116],
   "Xarope de Agave": [0.25, 84],
   "Mistura para Bolos Multiusos": [1, 120],

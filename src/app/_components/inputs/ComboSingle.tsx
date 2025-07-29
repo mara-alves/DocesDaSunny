@@ -4,31 +4,25 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 type ComboOption = { id?: string | null | undefined; name: string };
 
 export default function ComboSingle({
+  search,
+  setSearch,
   value,
   setValue,
   options,
   create,
 }: {
+  search: string;
+  setSearch: (value: string) => void;
   value: ComboOption | null;
   setValue: (value: ComboOption | null) => void;
   options: ComboOption[];
   create?: (name: string) => Promise<ComboOption>;
 }) {
-  const [search, setSearch] = useState("");
-
-  const filteredOptions =
-    search === ""
-      ? options
-      : (options.filter((e) => {
-          return e.name.toLowerCase().includes(search.toLowerCase());
-        }) ?? []);
-
   return (
     <Combobox
       as={"div"}
@@ -52,7 +46,7 @@ export default function ComboSingle({
             className="border-base-content bg-base w-full border-2 px-2 py-1"
           />
           <AnimatePresence>
-            {open && (
+            {open && options.length > 0 && (
               <ComboboxOptions
                 static
                 as={motion.div}
@@ -62,7 +56,7 @@ export default function ComboSingle({
                 anchor="bottom"
                 className="bg-base text-base-content z-10 !max-h-48 w-(--input-width) overflow-y-auto border-2 shadow-lg [--anchor-gap:4px]"
               >
-                {filteredOptions.map((e) => (
+                {options.map((e) => (
                   <ComboboxOption
                     key={e.name}
                     value={e}
@@ -71,7 +65,7 @@ export default function ComboSingle({
                     {e.name}
                   </ComboboxOption>
                 ))}
-                {!filteredOptions.find((e) => e.name === search) &&
+                {!options.find((e) => e.name === search) &&
                   search.length >= 1 &&
                   create && (
                     <ComboboxOption
@@ -84,7 +78,7 @@ export default function ComboSingle({
                       </span>
                     </ComboboxOption>
                   )}
-                {filteredOptions.length <= 0 && !create && (
+                {options.length <= 0 && !create && (
                   <div className="px-2 py-1 italic">Oops... Nenhuma opção</div>
                 )}
               </ComboboxOptions>

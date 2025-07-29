@@ -28,6 +28,31 @@ export const ingredientRouter = createTRPCRouter({
       });
     }),
 
+  // unlike list which shows all if no match and searches on whole string (contains),
+  // this is more restrictive -> only display matches, and startsWith
+  restrictedList: protectedProcedure
+    .input(z.object({ search: z.string() }).nullish())
+    .query(async ({ input, ctx }) => {
+      if (!input?.search) return [];
+      return ctx.db.ingredient.findMany({
+        where: {
+          ...(input
+            ? { name: { startsWith: input.search, mode: "insensitive" } }
+            : {}),
+        },
+        include: {
+          _count: {
+            select: {
+              recipeIngredients: true,
+            },
+          },
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+    }),
+
   create: protectedProcedure
     .input(z.object({ name: z.string().min(3) }))
     .mutation(async ({ input, ctx }) => {
