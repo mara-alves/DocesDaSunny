@@ -4,6 +4,7 @@ import { api } from "~/trpc/react";
 import ComboSingle from "../../inputs/ComboSingle";
 import { useState, type Ref } from "react";
 import { X } from "lucide-react";
+import { useDebounce } from "@uidotdev/usehooks";
 
 export default function EditableIngredient({
   ingredient,
@@ -20,10 +21,11 @@ export default function EditableIngredient({
   ref?: Ref<HTMLInputElement> | null;
 }) {
   const [search, setSearch] = useState("");
+  const debouncedSearchTerm = useDebounce(search, 200);
 
   const ingredientsQuery = api.ingredient.restrictedList.useQuery(
     {
-      search,
+      search: debouncedSearchTerm,
     },
     { placeholderData: (previousData) => previousData },
   );

@@ -30,7 +30,7 @@ export default function ComboSingle({
       value={value}
       onChange={async (val) => {
         setValue(val);
-        if (val && !val.id && create) {
+        if (val && val.id === "__create__" && create) {
           const newVal = await create(val.name);
           setValue(newVal);
         }
@@ -46,7 +46,7 @@ export default function ComboSingle({
             className="border-base-content bg-base w-full border-2 px-2 py-1"
           />
           <AnimatePresence>
-            {open && options.length > 0 && (
+            {open && (options.length > 0 || (create && search.length >= 1)) && (
               <ComboboxOptions
                 static
                 as={motion.div}
@@ -69,7 +69,7 @@ export default function ComboSingle({
                   search.length >= 1 &&
                   create && (
                     <ComboboxOption
-                      value={{ id: null, name: search }}
+                      value={{ id: "__create__", name: search }}
                       className="data-focus:bg-primary cursor-pointer px-2 py-1"
                     >
                       Criar{" "}

@@ -12,13 +12,13 @@ export default function StyledDisclosure({
   setOpen,
   icon,
   title,
-  content,
+  children,
 }: {
   open: boolean;
   setOpen: () => void;
   icon: ReactNode;
   title: string;
-  content: ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Disclosure
@@ -48,7 +48,7 @@ export default function StyledDisclosure({
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.25, ease: "easeInOut" }}
                 >
-                  {content}
+                  {children}
                 </motion.div>
               </DisclosurePanel>
             )}

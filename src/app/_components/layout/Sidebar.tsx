@@ -80,7 +80,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-fit">
+    <aside className="relative z-10 flex w-full flex-col items-center gap-8 md:w-[331px]">
       <Link href={"/"}>
         <Logo />
       </Link>
@@ -96,66 +96,64 @@ export default function Sidebar() {
             setOpen={() => switchOpen("filters")}
             icon={<CookingPot />}
             title="Filtrar Receitas"
-            content={
-              <div
-                className="flex flex-col gap-4 p-3"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Search value={search} setValue={setSearch} />
+          >
+            <div
+              className="flex flex-col gap-4 p-3"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Search value={search} setValue={setSearch} />
 
-                <div className="flex flex-col gap-1">
-                  <div className="flex flex-row items-center gap-4">
-                    <ArrowDownWideNarrow />
-                    <span className="font-serif italic">Ordenar por</span>
-                  </div>
-                  <SelectMenu
-                    options={orderMenuOptions}
-                    value={orderMenuOptions.find((e) => e.value === orderBy)!}
-                    setValue={(e) => setOrderBy(e.value as OrderOption)}
-                  />
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-row items-center gap-4">
+                  <ArrowDownWideNarrow />
+                  <span className="font-serif italic">Ordenar por</span>
                 </div>
-
-                <div className="flex flex-col gap-1">
-                  <div className="flex flex-row items-center gap-4">
-                    <TagIcon />
-                    <span className="font-serif italic">Tags</span>
-                  </div>
-                  <ComboMulti
-                    options={tagsQuery.data ?? []}
-                    value={tagsFilter}
-                    setValue={(e) => setTagsFilter(e as Tag[])}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <div className="flex flex-row items-center gap-4">
-                    <ShoppingBasket />
-                    <span className="font-serif italic">Ingredientes</span>
-                  </div>
-                  <ComboMulti
-                    options={ingredientsQuery.data ?? []}
-                    value={ingredientsFilter}
-                    setValue={(e) => setIngredientsFilter(e as Ingredient[])}
-                  />
-                </div>
+                <SelectMenu
+                  options={orderMenuOptions}
+                  value={orderMenuOptions.find((e) => e.value === orderBy)!}
+                  setValue={(e) => setOrderBy(e.value as OrderOption)}
+                />
               </div>
-            }
-          />
+
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-row items-center gap-4">
+                  <TagIcon />
+                  <span className="font-serif italic">Tags</span>
+                </div>
+                <ComboMulti
+                  options={tagsQuery.data ?? []}
+                  value={tagsFilter}
+                  setValue={(e) => setTagsFilter(e as Tag[])}
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-row items-center gap-4">
+                  <ShoppingBasket />
+                  <span className="font-serif italic">Ingredientes</span>
+                </div>
+                <ComboMulti
+                  options={ingredientsQuery.data ?? []}
+                  value={ingredientsFilter}
+                  setValue={(e) => setIngredientsFilter(e as Ingredient[])}
+                />
+              </div>
+            </div>
+          </StyledDisclosure>
         )}
         <StyledDisclosure
           open={selected === "converter"}
           setOpen={() => switchOpen("converter")}
           icon={<Scale />}
           title="Conversor de Medidas"
-          content={
-            <div
-              className="flex w-full flex-col gap-4 p-3"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <UnitConverter />
-            </div>
-          }
-        />
+        >
+          <div
+            className="flex w-full flex-col gap-4 p-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <UnitConverter />
+          </div>
+        </StyledDisclosure>
       </div>
       {pathname === "/" && (
         <div className="font-serif text-xl italic">
