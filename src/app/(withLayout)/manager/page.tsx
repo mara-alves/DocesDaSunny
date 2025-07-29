@@ -40,7 +40,7 @@ export default function Manager() {
             Atenção!
           </div>
           <div className="bg-primary/50 px-4 py-2">
-            Se o botão <Trash className="inline-block" /> não ter permitir
+            Se o botão <Trash className="inline-block" /> não te permitir
             apagar, significa que o ingrediente está a ser usado em alguma
             receita.
             <br></br>Renomear um ingrediente atualiza-o em todas as receitas em
