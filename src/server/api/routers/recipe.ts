@@ -2,11 +2,11 @@ import type { Prisma, Tag } from "@prisma/client";
 import { del } from "@vercel/blob";
 import { z } from "zod";
 import {
-  type createTRPCContext,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { db } from "~/server/db";
 
 /* ---------------------------------- Types --------------------------------- */
 export const orderOption = ["creation", "alphabetical"] as const;
@@ -141,11 +141,10 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
-  create: protectedProcedure
-    .input(recipeInput)
-    .mutation(async ({ input, ctx }) => {
+  create: protectedProcedure.input(recipeInput).mutation(async ({ input }) => {
+    return db.$transaction(async (tx) => {
       const { sections, tags, ...recipeBaseData } = input;
-      const { id: recipeId } = await ctx.db.recipe.create({
+      const { id: recipeId } = await tx.recipe.create({
         data: {
           ...recipeBaseData,
           tags: {
@@ -153,9 +152,9 @@ export const recipeRouter = createTRPCRouter({
           },
         },
       });
-      await createSectionsWithIngredients(ctx, recipeId, sections);
-      return;
-    }),
+      await createSectionsWithIngredients(tx.section, recipeId, sections);
+    });
+  }),
 
   delete: protectedProcedure
     .input(
@@ -177,23 +176,25 @@ export const recipeRouter = createTRPCRouter({
         imgUrlToDel: z.string().nullish(),
       }),
     )
-    .mutation(async ({ input, ctx }) => {
-      const { sections, tags, ...recipeBaseData } = input.data;
-      const { id: recipeId } = await ctx.db.recipe.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          ...recipeBaseData,
-          tags: {
-            set: [],
-            connect: tags.filter((e) => !!e.id) as Tag[],
+    .mutation(async ({ input }) => {
+      return db.$transaction(async (tx) => {
+        const { sections, tags, ...recipeBaseData } = input.data;
+        const { id: recipeId } = await tx.recipe.update({
+          where: {
+            id: input.id,
           },
-        },
+          data: {
+            ...recipeBaseData,
+            tags: {
+              set: [],
+              connect: tags.filter((e) => !!e.id) as Tag[],
+            },
+          },
+        });
+        await tx.section.deleteMany({ where: { recipeId: input.id } });
+        await createSectionsWithIngredients(tx.section, recipeId, sections);
+        if (input.imgUrlToDel) await del(input.imgUrlToDel);
       });
-      await ctx.db.section.deleteMany({ where: { recipeId: input.id } });
-      await createSectionsWithIngredients(ctx, recipeId, sections);
-      if (input.imgUrlToDel) await del(input.imgUrlToDel);
     }),
 
   createTag: protectedProcedure
@@ -204,12 +205,12 @@ export const recipeRouter = createTRPCRouter({
 });
 
 const createSectionsWithIngredients = async (
-  ctx: Awaited<ReturnType<typeof createTRPCContext>>,
+  ctxDbSection: typeof db.section,
   recipeId: string,
   sections: FrontendSection[],
 ) => {
   for (const section of sections) {
-    await ctx.db.section.create({
+    await ctxDbSection.create({
       data: {
         name: section.name,
         preparation: section.preparation,
