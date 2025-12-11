@@ -65,6 +65,7 @@ export default function EditableRecipe({
       await trpcUtils.recipe.list.invalidate();
       router.push("/");
     },
+    onError: () => setIsLoading(false),
   });
   const editMutation = api.recipe.edit.useMutation({
     onSuccess: async () => {
@@ -77,6 +78,7 @@ export default function EditableRecipe({
       await trpcUtils.recipe.getById.invalidate();
       router.push(`/${recipe!.id}`);
     },
+    onError: () => setIsLoading(false),
   });
 
   const tagsQuery = api.recipe.listTags.useQuery();
