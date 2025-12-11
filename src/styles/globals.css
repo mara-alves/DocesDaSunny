@@ -12,6 +12,11 @@
   --color-primary-darker: #cebdbd;
 }
 
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+  display: none;
+}
+
 ::selection {
   background-color: color-mix(
     in srgb,

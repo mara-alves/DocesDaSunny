@@ -19,7 +19,7 @@ export default function InputTime({
       {icon}
       <div className="font-semibold">{label}:</div>
       <div
-        className="border-base-content group ml-auto flex w-fit flex-row gap-1.5 border-2 px-2 py-1 md:ml-0"
+        className="border-base-content group ml-auto flex w-fit flex-row items-center gap-1.5 border-2 px-2 py-1 md:ml-0"
         onClick={() => ref.current?.focus()}
       >
         <Clock />
