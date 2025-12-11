@@ -11,8 +11,8 @@ export default function InputNumber({
 }: {
   icon?: ReactNode;
   label?: string;
-  value: number;
-  setValue: (value: number) => void;
+  value: number | null;
+  setValue: (value: number | null) => void;
   style?: string;
   min?: number;
   max?: number;
@@ -24,8 +24,8 @@ export default function InputNumber({
       <input
         type="number"
         size={2}
-        value={value}
-        onChange={(e) => setValue(+e.target.value)}
+        value={value ?? ""}
+        onChange={(e) => setValue(e.target.value ? +e.target.value : null)}
         className={style}
         min={min}
         max={max}

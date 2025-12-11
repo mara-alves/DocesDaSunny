@@ -3,7 +3,7 @@ import ComboSingle from "../inputs/ComboSingle";
 import InputNumber from "../inputs/InputNumber";
 
 export default function UnitConverter() {
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number | null>(1);
   const [selected, setSelected] = useState<string>("");
   const [search, setSearch] = useState<string>("");
 
@@ -33,7 +33,7 @@ export default function UnitConverter() {
       <div className="bg-base-content h-0.5 w-full" />
       <span className="ml-auto text-xl font-semibold">
         {"= " +
-          (record[selected]
+          (record[selected] && quantity
             ? (record[selected][1] * quantity) / record[selected][0]
             : 0) +
           " Gramas"}
