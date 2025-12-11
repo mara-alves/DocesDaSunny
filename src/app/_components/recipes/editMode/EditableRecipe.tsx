@@ -88,9 +88,9 @@ export default function EditableRecipe({
 
   const editForm = (
     key: keyof FrontendRecipe,
-    value: string | number | FrontendTag[],
+    value: string | number | null | FrontendTag[],
   ) => {
-    let formattedValue: string | number | FrontendTag[] = value;
+    let formattedValue: string | number | FrontendTag[] = value ?? "";
     if (key === "prepSeconds" || key === "waitSeconds") {
       const [hours, minutes] = (value as string).split(":");
       formattedValue = +hours! * 3600 + +minutes! * 60;
@@ -133,6 +133,10 @@ export default function EditableRecipe({
   const saveChanges = async () => {
     if (!form.name) {
       toast.error("É obrigatório dares um nome à receita!");
+      return;
+    }
+    if (!form.servings) {
+      toast.error("É obrigatório inserires o número de porções");
       return;
     }
     setIsLoading(true);

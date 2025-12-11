@@ -39,7 +39,7 @@ export default function RecipeView() {
     },
   });
 
-  const [servings, setServings] = useState<number>(0);
+  const [servings, setServings] = useState<number | null>(0);
   useEffect(() => {
     if (fullRecipe) setServings(fullRecipe.servings);
   }, [fullRecipe]);
@@ -142,7 +142,7 @@ export default function RecipeView() {
             key={section.id}
             section={section}
             servingsOriginal={fullRecipe.servings}
-            servingsSelected={servings}
+            servingsSelected={servings ?? fullRecipe.servings}
           />
         ))}
 
