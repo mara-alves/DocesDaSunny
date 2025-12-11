@@ -12,6 +12,14 @@
   --color-primary-darker: #cebdbd;
 }
 
+::selection {
+  background-color: color-mix(
+    in srgb,
+    var(--color-base-content),
+    transparent 85%
+  );
+}
+
 :focus-visible {
   @apply outline-base-content outline-offset-1 focus-within:outline-1;
 }
