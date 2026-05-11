@@ -1,8 +1,11 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRecipeContext } from "~/app/_contexts/RecipeContext";
 import NoImage from "~/app/_images/NoImage.png";
 import type { RouterOutputs } from "~/trpc/react";
+
+const MotionImage = motion.create(Image);
 
 export default function RecipeCard({
   recipe,
@@ -29,13 +32,15 @@ export default function RecipeCard({
     >
       <motion.div
         layoutId={recipe.name + " image container"}
-        className="relative flex aspect-square w-full items-center overflow-hidden"
+        className="relative aspect-square w-full overflow-hidden"
       >
-        <motion.img
+        <MotionImage
           layoutId={recipe.name + " image"}
-          src={recipe.image ?? NoImage.src}
+          src={recipe.image ?? NoImage}
           alt={recipe.name + " photo"}
-          className="min-h-full min-w-full object-cover"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
         <div className="absolute top-2 flex w-full flex-wrap justify-end gap-2 pl-4 text-sm opacity-0 transition group-hover:opacity-100">
           {recipe?.tags.map((tag) => (

@@ -7,7 +7,12 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["eqthkvjqrjdtupy9.public.blob.vercel-storage.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "eqthkvjqrjdtupy9.public.blob.vercel-storage.com",
+      },
+    ],
   },
 
   webpack(config) {

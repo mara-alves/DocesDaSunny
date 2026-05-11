@@ -1,7 +1,7 @@
 "use client";
 
 import EditableRecipe from "~/app/_components/recipes/editMode/EditableRecipe";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export default function NewRecipe() {
   return (

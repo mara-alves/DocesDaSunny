@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import Image from "next/image";
 import {
   CookingPot,
   Hourglass,
@@ -21,6 +22,8 @@ import LoadingIndicator from "~/app/_components/layout/LoadingIndicator";
 import TopPageNavigation from "~/app/_components/layout/TopPageNavigation";
 import { useEffect, useState } from "react";
 import InputNumber from "~/app/_components/inputs/InputNumber";
+
+const MotionImage = motion.create(Image);
 
 export default function RecipeView() {
   const router = useRouter();
@@ -90,13 +93,16 @@ export default function RecipeView() {
 
       <motion.div
         layoutId={recipe?.name + " image container"}
-        className="flex h-64 w-full items-center overflow-hidden"
+        className="relative h-64 w-full overflow-hidden"
       >
-        <motion.img
+        <MotionImage
           layoutId={recipe?.name + " image"}
-          src={recipe?.image ?? NoImage.src}
-          alt={recipe?.name + " photo"}
-          className="w-full"
+          src={recipe?.image ?? NoImage}
+          alt={(recipe?.name ?? "") + " photo"}
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
         />
       </motion.div>
       <motion.div

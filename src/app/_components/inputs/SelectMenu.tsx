@@ -6,7 +6,7 @@ import {
 } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 
 type SelectOption = { value: string; label: string; icon?: ReactNode };
 

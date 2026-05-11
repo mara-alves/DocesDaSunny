@@ -90,23 +90,25 @@ export const recipeRouter = createTRPCRouter({
       else orderBy = { name: "asc" as "asc" | "desc" };
 
       const limit = 20;
-      const recipes = await ctx.db.recipe.findMany({
-        take: limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        where,
-        orderBy: orderBy,
-        include: {
-          tags: true,
-        },
-      });
+      const [rawRecipes, totalCount] = await Promise.all([
+        ctx.db.recipe.findMany({
+          take: limit + 1,
+          cursor: input.cursor ? { id: input.cursor } : undefined,
+          where,
+          orderBy: orderBy,
+          include: {
+            tags: true,
+          },
+        }),
+        ctx.db.recipe.count({ where }),
+      ]);
 
+      const recipes = rawRecipes;
       let nextCursor: typeof input.cursor | undefined = undefined;
       if (recipes.length > limit) {
         const nextItem = recipes.pop();
         nextCursor = nextItem?.id;
       }
-
-      const totalCount = await ctx.db.recipe.count({ where });
 
       return { recipes, nextCursor, totalCount };
     }),
